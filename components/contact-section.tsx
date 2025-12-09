@@ -1,10 +1,11 @@
 "use client"
 
 import type React from "react"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Mail, Phone, MapPin, Send } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
+import { createClient } from "@/lib/supabase"
+import { toast } from "sonner"
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -14,20 +15,52 @@ export default function ContactSection() {
     projectType: "web-development",
     message: "",
   })
-  const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [contactSettings, setContactSettings] = useState({
+    email: "hello@portfolio.com",
+    whatsapp: "",
+  })
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from("site_settings").select("*").single()
+      if (data) {
+        setContactSettings({
+          email: data.contact_email || "hello@portfolio.com",
+          whatsapp: data.whatsapp_number || "",
+        })
+      }
+    }
+    fetchSettings()
+  }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the form data to a backend
-    console.log(formData)
-    setSubmitted(true)
-    setFormData({ name: "", email: "", phone: "", projectType: "web-development", message: "" })
-    setTimeout(() => setSubmitted(false), 3000)
+    setLoading(true)
+
+    try {
+      const { error } = await supabase.from("contact_messages").insert({
+        name: formData.name,
+        email: formData.email,
+        message: `${formData.message}\n\nPhone: ${formData.phone}\nProject Type: ${formData.projectType}`,
+      })
+
+      if (error) throw error
+
+      toast.success("Message sent successfully! I'll get back to you soon.")
+      setFormData({ name: "", email: "", phone: "", projectType: "web-development", message: "" })
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to send message. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -54,9 +87,9 @@ export default function ContactSection() {
             className="lg:col-span-1 flex flex-col gap-6"
           >
             {[
-              { icon: Mail, title: "Email", value: "hello@portfolio.com" },
-              { icon: Phone, title: "Phone", value: "+1 (555) 123-4567" },
-              { icon: MapPin, title: "Location", value: "San Francisco, CA" },
+              { icon: Mail, title: "Email", value: contactSettings.email },
+              { icon: Phone, title: "WhatsApp", value: contactSettings.whatsapp || "Not configured" },
+              { icon: MapPin, title: "Location", value: "Remote / Worldwide" },
             ].map((item, index) => (
               <div key={index} className="flex gap-4">
                 <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -64,7 +97,7 @@ export default function ContactSection() {
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground font-medium">{item.title}</p>
-                  <p className="text-foreground font-semibold">{item.value}</p>
+                  <p className="text-foreground font-semibold break-all">{item.value}</p>
                 </div>
               </div>
             ))}
@@ -87,6 +120,7 @@ export default function ContactSection() {
                 onChange={handleChange}
                 required
                 className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                disabled={loading}
               />
               <input
                 type="email"
@@ -96,6 +130,7 @@ export default function ContactSection() {
                 onChange={handleChange}
                 required
                 className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                disabled={loading}
               />
             </div>
 
@@ -107,12 +142,14 @@ export default function ContactSection() {
                 value={formData.phone}
                 onChange={handleChange}
                 className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                disabled={loading}
               />
               <select
                 name="projectType"
                 value={formData.projectType}
                 onChange={handleChange}
                 className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:border-primary transition-colors"
+                disabled={loading}
               >
                 <option value="web-development">Web Development</option>
                 <option value="design">Design</option>
@@ -129,22 +166,17 @@ export default function ContactSection() {
               required
               rows={5}
               className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
+              disabled={loading}
             />
 
-            <button type="submit" className="w-full button-primary flex items-center justify-center gap-2">
-              <Send size={18} />
-              Send Message
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full button-primary flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {loading ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+              {loading ? "Sending..." : "Send Message"}
             </button>
-
-            {submitted && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-green-500 font-semibold text-center"
-              >
-                Message sent successfully! I'll get back to you soon.
-              </motion.p>
-            )}
           </motion.form>
         </div>
       </div>

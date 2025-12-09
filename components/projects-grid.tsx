@@ -1,11 +1,36 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import ProjectCard from "./project-card"
 import Link from "next/link"
-import { projects } from "@/lib/data"
+import { createClient } from "@/lib/supabase"
+import ProjectsSkeleton from "./skeletons/projects-skeleton"
+// Fallback data
+import { projects as fallbackProjects } from "@/lib/data"
 
 export default function ProjectsGrid() {
+  const [projects, setProjects] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchProjects() {
+      const { data } = await supabase
+        .from("projects")
+        .select("*")
+        .order("created_at", { ascending: false })
+
+      if (data && data.length > 0) {
+        setProjects(data)
+      } else {
+        setProjects(fallbackProjects)
+      }
+      setLoading(false)
+    }
+    fetchProjects()
+  }, [])
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -41,21 +66,25 @@ export default function ProjectsGrid() {
           </p>
         </motion.div>
 
-        <motion.div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-        >
-          {projects.map((project) => (
-            <motion.div key={project.id} variants={itemVariants}>
-              <Link href={`/projects/${project.id}`}>
-                <ProjectCard project={project} />
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
+        {loading ? (
+          <ProjectsSkeleton />
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            {projects.map((project) => (
+              <motion.div key={project.id} variants={itemVariants}>
+                <Link href={`/projects/${project.id}`}>
+                  <ProjectCard project={project} />
+                </Link>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
     </section>
   )

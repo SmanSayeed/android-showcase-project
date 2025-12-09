@@ -9,7 +9,8 @@ interface ProjectCardProps {
     id: number
     title: string
     description: string
-    image: string
+    image?: string
+    image_url?: string
     tags: string[]
   }
 }
@@ -24,7 +25,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {/* Image */}
       <div className="relative w-full h-48 rounded-lg overflow-hidden mb-4 bg-(--color-bg)">
         <Image
-          src={project.image || "/placeholder.svg"}
+          src={project.image_url || project.image || "/placeholder.svg"}
           alt={project.title}
           fill
           className="object-cover group-hover:scale-110 transition-transform duration-300"

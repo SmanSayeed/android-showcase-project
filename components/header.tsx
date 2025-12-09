@@ -1,13 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
-import ThemeToggle from "./theme-toggle"
+import { createClient } from "@/lib/supabase"
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [siteName, setSiteName] = useState("ProgrammingHero")
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from("site_settings").select("site_name").single()
+      if (data?.site_name) {
+        setSiteName(data.site_name)
+      }
+    }
+    fetchSettings()
+  }, [])
 
   const navItems = [
     { label: "Home", href: "#home" },
@@ -22,9 +34,9 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#7c3aed] to-[#ec4899] flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">
-              PH
+              {siteName.charAt(0)}
             </div>
-            <span className="font-bold text-lg hidden sm:inline text-foreground">ProgrammingHero</span>
+            <span className="font-bold text-lg hidden sm:inline text-foreground">{siteName}</span>
           </Link>
 
           {/* Desktop Navigation */}

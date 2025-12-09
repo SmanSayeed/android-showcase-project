@@ -2,8 +2,6 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
@@ -57,9 +55,7 @@ export default function RootLayout({
       </head>
       <body className={`${geist.className} antialiased`} suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} forcedTheme="dark">
-          <Header />
-          <main className="bg-background text-foreground">{children}</main>
-          <Footer />
+          {children}
         </ThemeProvider>
         <Analytics />
       </body>
