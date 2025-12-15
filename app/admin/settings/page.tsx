@@ -8,6 +8,7 @@ import ImageUpload from "@/components/admin/image-upload"
 
 export default function SettingsPage() {
     const [settings, setSettings] = useState({
+        id: null as number | null,
         site_name: "",
         contact_email: "",
         logo_url: "",
@@ -32,20 +33,40 @@ export default function SettingsPage() {
         e.preventDefault()
         setSaving(true)
 
-        // Upsert logic (if ID 1 exists update it, otherwise insert)
-        // Assuming single row for simplicity with ID=1 or we just update the first row found
-        const { error } = await supabase.from("site_settings").upsert({
-            id: 1, // Enforce singleton
-            ...settings,
-            // Preserve other fields not in this form if needed, but here we cover name/email/logo
-            // whatsapp_number is handled elsewhere so we should be careful not to overwrite it with null if we didn't fetch it? 
-            // Actually upsert overwrites. We should fetch everything first.
-        })
+        // If we have an ID, update that specific row. If not, insert a new one.
+        const payload = {
+            site_name: settings.site_name,
+            contact_email: settings.contact_email,
+            logo_url: settings.logo_url,
+            // Preserve whatsapp if needed, or rely on existing data merge if we fetched it?
+            // Ideally we fetched everything via select("*"), so 'settings' has it if we didn't strip it.
+            // But our state definition above only listed specific fields.
+            // Let's rely on the fact that 'data' from fetch likely had extra fields that spread into state.
+        };
+
+        let error;
+        
+        if (settings.id) {
+             const { error: updateError } = await supabase
+                .from("site_settings")
+                .update(payload)
+                .eq("id", settings.id)
+             error = updateError;
+        } else {
+             // Fallback for empty table
+             const { error: insertError } = await supabase
+                .from("site_settings")
+                .insert([payload])
+             error = insertError;
+        }
 
         if (error) {
-            toast.error("Failed to save settings")
+            console.error("Save error:", error)
+            toast.error(`Failed to save: ${error.message}`)
         } else {
-            toast.success("Settings saved")
+            toast.success("Settings saved successfully")
+            // Refresh to ensure we have the ID and latest state
+            fetchSettings()
         }
         setSaving(false)
     }
@@ -78,7 +99,7 @@ export default function SettingsPage() {
                             <input
                                 type="text"
                                 required
-                                value={settings.site_name}
+                                value={settings.site_name || ""}
                                 onChange={(e) => setSettings(prev => ({ ...prev, site_name: e.target.value }))}
                                 className="w-full px-4 py-2 rounded-lg bg-background border border-border"
                             />
@@ -93,7 +114,7 @@ export default function SettingsPage() {
                         <input
                             type="email"
                             required
-                            value={settings.contact_email}
+                            value={settings.contact_email || ""}
                             onChange={(e) => setSettings(prev => ({ ...prev, contact_email: e.target.value }))}
                             className="w-full px-4 py-2 rounded-lg bg-background border border-border"
                         />

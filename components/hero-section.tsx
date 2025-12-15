@@ -46,7 +46,7 @@ export default function HeroSection() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-0 lg:gap-12 items-center"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
@@ -70,21 +70,39 @@ export default function HeroSection() {
               High quality development with modern UI, Fast Performance, and global standard security
             </motion.p>
 
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 pt-4">
-              <Link
-                href="#contact"
-                className="px-6 py-3 rounded-lg font-semibold bg-gradient-to-r from-[#3b82f6] to-[#7c3aed] text-white hover:shadow-lg hover:shadow-blue-500/50 transition-all inline-flex items-center justify-center gap-2 group"
-              >
-                Get a Free Quote
-                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="#projects"
-                className="px-6 py-3 rounded-lg font-semibold border-2 border-primary text-foreground hover:bg-muted transition-all inline-flex items-center justify-center"
-              >
-                View Our Work
-              </Link>
-            </motion.div>
+       <motion.div
+  variants={itemVariants}
+  className="flex flex-col gap-3 pt-4 sm:flex-row sm:gap-4"
+>
+  {/* Primary CTA */}
+  <Link
+    href="#contact"
+    className="w-full sm:w-auto px-6 py-3 rounded-xl font-semibold
+               bg-gradient-to-r from-[#3b82f6] to-[#7c3aed]
+               text-white text-center
+               hover:shadow-lg hover:shadow-blue-500/40
+               active:scale-[0.98]
+               transition-all
+               inline-flex items-center justify-center gap-2"
+  >
+    Get a Free Quote
+    <ChevronRight className="w-4 h-4" />
+  </Link>
+
+  {/* Secondary CTA */}
+  <Link
+    href="#projects"
+    className="w-full sm:w-auto px-6 py-3 rounded-xl font-semibold
+               border border-border
+               bg-card text-foreground
+               hover:bg-muted
+               active:scale-[0.98]
+               transition-all
+               inline-flex items-center justify-center"
+  >
+    View Our Work
+  </Link>
+</motion.div>
           </motion.div>
 
           {/* Right Content - Lottie Animation */}
