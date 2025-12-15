@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import Link from "next/link"
 import { Github, Linkedin, Twitter, Mail, Facebook, Instagram, Youtube, Globe } from "lucide-react"
 import { createClient } from "@/lib/supabase"
+import Image from "next/image"
 
 // Icon mapping helper
 const getIcon = (platform: string) => {
@@ -22,16 +23,12 @@ const getIcon = (platform: string) => {
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const [socials, setSocials] = useState<any[]>([])
-  const [siteName, setSiteName] = useState("ProgrammingHero")
   const supabase = createClient()
 
   useEffect(() => {
     async function fetchData() {
       const { data: socialData } = await supabase.from("social_links").select("*").eq("is_active", true)
       if (socialData) setSocials(socialData)
-
-      const { data: settings } = await supabase.from("site_settings").select("site_name").single()
-      if (settings?.site_name) setSiteName(settings.site_name)
     }
     fetchData()
   }, [])
@@ -43,10 +40,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="flex flex-col gap-4">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
-              {siteName.charAt(0)}
-            </div>
-            <p className="font-bold text-foreground">{siteName}</p>
+            <Image
+              src="/my-logo.jpeg"
+              alt="Aptic Studio Logo"
+              width={40}
+              height={40}
+              className="rounded-lg"
+            />
+            <p className="font-bold text-foreground">Aptic Studio</p>
             <p className="text-muted-foreground text-sm">
               Building beautiful and functional digital experiences.
             </p>
@@ -121,7 +122,7 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-sm">&copy; {currentYear} {siteName}. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">&copy; {currentYear} Aptic Studio. All rights reserved.</p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">
               Privacy Policy
