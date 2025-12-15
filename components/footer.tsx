@@ -24,7 +24,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
   const [socials, setSocials] = useState<any[]>([])
   const [siteName, setSiteName] = useState("Aptic Studio")
-  const [logoUrl, setLogoUrl] = useState("/my-logo.jpeg")
+  const [logoUrl, setLogoUrl] = useState("/my-logo.png")
   const supabase = createClient()
 
   useEffect(() => {

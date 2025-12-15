@@ -11,7 +11,7 @@ import { createClient } from "@/lib/supabase"
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [siteName, setSiteName] = useState("Aptic Studio")
-  const [logoUrl, setLogoUrl] = useState("/my-logo.jpeg")
+  const [logoUrl, setLogoUrl] = useState("/my-logo.png")
   const supabase = createClient()
 
   useEffect(() => {

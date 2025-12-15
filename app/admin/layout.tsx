@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users } from "lucide-react"
 import AdminHeader from "@/components/admin/header"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -44,6 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
         { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
         { icon: FolderKanban, label: "Projects", href: "/admin/projects" },
+        { icon: Users, label: "Testimonials", href: "/admin/testimonials" },
         { icon: Share2, label: "Social Media", href: "/admin/socials" },
         { icon: MessageCircle, label: "WhatsApp", href: "/admin/whatsapp" },
         { icon: Settings, label: "General Settings", href: "/admin/settings" },
