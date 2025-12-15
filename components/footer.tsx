@@ -23,12 +23,20 @@ const getIcon = (platform: string) => {
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const [socials, setSocials] = useState<any[]>([])
+  const [siteName, setSiteName] = useState("Aptic Studio")
+  const [logoUrl, setLogoUrl] = useState("/my-logo.jpeg")
   const supabase = createClient()
 
   useEffect(() => {
     async function fetchData() {
       const { data: socialData } = await supabase.from("social_links").select("*").eq("is_active", true)
       if (socialData) setSocials(socialData)
+
+      const { data: settings } = await supabase.from("site_settings").select("site_name, logo_url").single()
+      if (settings) {
+        if (settings.site_name) setSiteName(settings.site_name)
+        if (settings.logo_url) setLogoUrl(settings.logo_url)
+      }
     }
     fetchData()
   }, [])
@@ -41,13 +49,13 @@ export default function Footer() {
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <Image
-              src="/my-logo.jpeg"
-              alt="Aptic Studio Logo"
+              src={logoUrl}
+              alt={`${siteName} Logo`}
               width={40}
               height={40}
-              className="rounded-lg"
+              className="rounded-lg object-cover"
             />
-            <p className="font-bold text-foreground">Aptic Studio</p>
+            <p className="font-bold text-foreground">{siteName}</p>
             <p className="text-muted-foreground text-sm">
               Building beautiful and functional digital experiences.
             </p>
@@ -122,7 +130,7 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-sm">&copy; {currentYear} Aptic Studio. All rights reserved.</p>
+          <p className="text-muted-foreground text-sm">&copy; {currentYear} {siteName}. All rights reserved.</p>
           <div className="flex gap-6 text-sm text-muted-foreground">
             <a href="#" className="hover:text-primary transition-colors">
               Privacy Policy

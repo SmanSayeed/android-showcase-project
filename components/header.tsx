@@ -1,13 +1,29 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
 import Image from "next/image"
 
+import { createClient } from "@/lib/supabase"
+
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
+  const [siteName, setSiteName] = useState("Aptic Studio")
+  const [logoUrl, setLogoUrl] = useState("/my-logo.jpeg")
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from("site_settings").select("site_name, logo_url").single()
+      if (data) {
+        if (data.site_name) setSiteName(data.site_name)
+        if (data.logo_url) setLogoUrl(data.logo_url)
+      }
+    }
+    fetchSettings()
+  }, [])
 
   const navItems = [
     { label: "Home", href: "#home" },
@@ -22,13 +38,13 @@ export default function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/my-logo.jpeg"
-              alt="Aptic Studio Logo"
+              src={logoUrl}
+              alt={`${siteName} Logo`}
               width={40}
               height={40}
-              className="rounded-lg group-hover:scale-110 transition-transform"
+              className="rounded-lg group-hover:scale-110 transition-transform object-cover"
             />
-            <span className="font-bold text-lg hidden sm:inline text-foreground">Aptic Studio</span>
+            <span className="font-bold text-lg hidden sm:inline text-foreground">{siteName}</span>
           </Link>
 
           {/* Desktop Navigation */}
