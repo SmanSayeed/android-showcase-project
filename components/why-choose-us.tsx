@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
+import Link from "next/link"
 
 export default function WhyChooseUs() {
   const features = [
@@ -68,6 +69,23 @@ export default function WhyChooseUs() {
               </div>
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* View Team Button */}
+        <motion.div 
+          className="mt-16 flex justify-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+        >
+          <Link href="/team" className="relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+            <button className="relative px-8 py-4 bg-background text-foreground font-bold rounded-lg leading-none flex items-center divide-x divide-gray-600 border border-gray-600/30">
+              <span className="pr-6 text-lg group-hover:text-primary transition duration-200">View Team</span>
+              <span className="pl-6 text-muted-foreground group-hover:text-gray-100 transition duration-200">Meet the Experts &rarr;</span>
+            </button>
+          </Link>
         </motion.div>
       </div>
     </section>
