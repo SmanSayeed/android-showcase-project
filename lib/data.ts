@@ -29,6 +29,15 @@ export const services = [
         icon: Gamepad2,
         color: "from-[#ec4899] to-[#f43f5e]",
     },
+    {
+        id: "ui-ux",
+        title: "UI/UX Design",
+        description: "Creative and intuitive user interface designs that enhance user engagement and satisfaction.",
+        fullDescription: "We design user interfaces that are not only visually appealing but also easy to use. Our process starts with wireframing and prototyping to ensure the user flow is logical and efficient. We use modern design tools like Figma to create high-fidelity mockups that align with your brand identity.",
+        features: ["User Research & Personas", "Wireframing & Prototyping", "Design Systems (Figma)", "Usability Testing"],
+        icon: Layout,
+        color: "from-[#f97316] to-[#ea580c]",
+    },
 ]
 
 export const projects = [
