@@ -43,7 +43,7 @@ export default function ProjectsGrid() {
       //   setHasMore(false)
       // }
     } catch (error) {
-      console.error(error)
+      console.log(error)
       toast.error("Failed to load projects")
     }
   }

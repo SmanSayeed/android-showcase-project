@@ -73,7 +73,7 @@ export default function ProjectEditor({ params }: { params: Promise<{ id?: strin
             toast.success("Image uploaded")
         } catch (error) {
             toast.error("Error uploading image")
-            console.error(error)
+            console.log(error)
         } finally {
             setLoading(false)
         }

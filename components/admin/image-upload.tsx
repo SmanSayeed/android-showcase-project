@@ -41,7 +41,7 @@ export default function ImageUpload({ value, onChange, disabled }: ImageUploadPr
             toast.success("Image uploaded")
         } catch (error) {
             toast.error("Error uploading image")
-            console.error(error)
+            console.log(error)
         } finally {
             setUploading(false)
         }

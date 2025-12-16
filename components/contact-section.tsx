@@ -56,7 +56,7 @@ export default function ContactSection() {
       toast.success("Message sent successfully! I'll get back to you soon.")
       setFormData({ name: "", email: "", phone: "", projectType: "web-development", message: "" })
     } catch (error) {
-      console.error(error)
+      console.log(error)
       toast.error("Failed to send message. Please try again.")
     } finally {
       setLoading(false)
