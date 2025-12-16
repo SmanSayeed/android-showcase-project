@@ -45,7 +45,7 @@ export default function ContactSection() {
     setLoading(true)
 
     try {
-      const { error } = await supabase.from("contact_messages").insert({
+      const { error, status } = await supabase.from("contact_messages").insert({
         name: formData.name,
         email: formData.email,
         message: `${formData.message}\n\nPhone: ${formData.phone}\nProject Type: ${formData.projectType}`,
@@ -53,11 +53,16 @@ export default function ContactSection() {
 
       if (error) throw error
 
+      // Check for success status (201 Created or 204 No Content)
+      if (status !== 201 && status !== 204) {
+        throw new Error("Failed to send message")
+      }
+
       toast.success("Message sent successfully! I'll get back to you soon.")
       setFormData({ name: "", email: "", phone: "", projectType: "web-development", message: "" })
-    } catch (error) {
-      console.error(error)
-      toast.error("Failed to send message. Please try again.")
+    } catch (error: any) {
+      console.error("Submission error:", error)
+      toast.error(error.message || "Failed to send message. Please try again.")
     } finally {
       setLoading(false)
     }

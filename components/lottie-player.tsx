@@ -27,7 +27,7 @@ export default function LottiePlayer() {
           })
         }
       } catch (error) {
-        console.error("[v0] Error loading Lottie animation:", error)
+        console.log("[v0] Error loading Lottie animation:", error)
       }
     }
 

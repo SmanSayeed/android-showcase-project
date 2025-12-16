@@ -4,12 +4,15 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users } from "lucide-react"
 import AdminHeader from "@/components/admin/header"
+
+import { getMyRole } from "@/app/actions/users"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const [authorized, setAuthorized] = useState(false)
     const [sidebarOpen, setSidebarOpen] = useState(false)
+    const [userRole, setUserRole] = useState<string | null>(null)
     const router = useRouter()
     const pathname = usePathname()
     const supabase = createClient()
@@ -26,6 +29,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 router.push("/admin-secret-login")
             } else {
                 setAuthorized(true)
+                try {
+                    const { role } = await getMyRole()
+                    setUserRole(role)
+                } catch (e) {
+                    console.error("Failed to fetch role", e)
+                }
             }
         }
         checkAuth()
@@ -40,14 +49,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     if (!authorized) return null
 
-    const menuItems = [
-        { icon: LayoutDashboard, label: "Dashboard", href: "/admin" },
-        { icon: MessageSquare, label: "Messages", href: "/admin/messages" },
-        { icon: FolderKanban, label: "Projects", href: "/admin/projects" },
-        { icon: Share2, label: "Social Media", href: "/admin/socials" },
-        { icon: MessageCircle, label: "WhatsApp", href: "/admin/whatsapp" },
-        { icon: Settings, label: "General Settings", href: "/admin/settings" },
+    const allMenuItems = [
+        { icon: LayoutDashboard, label: "Dashboard", href: "/admin", roles: ["all"] },
+        { icon: MessageSquare, label: "Messages", href: "/admin/messages", roles: ["all"] },
+        { icon: FolderKanban, label: "Projects", href: "/admin/projects", roles: ["all"] },
+        { icon: Users, label: "Users", href: "/admin/users", roles: ["super-admin", "secret"] },
+        { icon: Users, label: "Testimonials", href: "/admin/testimonials", roles: ["all"] },
+        { icon: Share2, label: "Social Media", href: "/admin/socials", roles: ["all"] },
+        { icon: MessageCircle, label: "WhatsApp", href: "/admin/whatsapp", roles: ["all"] },
+        { icon: Settings, label: "General Settings", href: "/admin/settings", roles: ["all"] },
     ]
+
+    const menuItems = allMenuItems.filter(item => {
+        if (item.roles.includes("all")) return true
+        if (userRole && item.roles.includes(userRole)) return true
+        return false
+    })
 
     return (
         <div className="flex h-screen bg-background text-foreground overflow-hidden">
@@ -103,7 +120,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-                <AdminHeader onMenuClick={() => setSidebarOpen(true)} onLogout={handleLogout} />
+                <AdminHeader onMenuClick={() => setSidebarOpen(true)} />
 
                 {/* Scrollable Content */}
                 <main className="flex-1 overflow-y-auto p-4 md:p-8 bg-muted/20">

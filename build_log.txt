@@ -1,0 +1,33 @@
+
+> my-v0-project@0.1.0 build L:\projects\android-showcase-portfolio\android-showcase-portfolio
+> next build
+
+   Γû▓ Next.js 16.0.7 (Turbopack)
+   - Environments: .env
+
+ ΓÜá The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+   Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 1 errors:
+./lib/supabase-admin.ts:1:1
+Module not found: Can't resolve '@supabase/supabase-js'
+> 1 | import { createClient } from "@supabase/supabase-js"
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  2 |
+  3 | export function createAdminClient() {
+  4 |   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+
+
+
+Import trace:
+  Server Component:
+    ./lib/supabase-admin.ts
+    ./app/admin/projects/actions.ts
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (./lib/supabase-admin.ts:1:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+ΓÇëELIFECYCLEΓÇë Command failed with exit code 1.

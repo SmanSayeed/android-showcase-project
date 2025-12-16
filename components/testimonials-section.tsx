@@ -3,36 +3,27 @@
 import { motion } from "framer-motion"
 import { Star, Quote } from "lucide-react"
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Sarah Johnson",
-    role: "CEO, TechStart Inc",
-    image: "/professional-headshot.png",
-    content:
-      "Outstanding work! The developer delivered exactly what we needed. Professional, timely, and exceeded expectations.",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Michael Chen",
-    role: "Product Manager, Digital Solutions",
-    image: "/professional-male-headshot.png",
-    content:
-      "Exceptional attention to detail. The code quality is top-notch and the UI/UX implementation was flawless.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Emma Williams",
-    role: "Founder, Creative Studio",
-    image: "/professional-woman-headshot.png",
-    content: "Best decision we made! Transformed our vision into reality with creativity and technical excellence.",
-    rating: 5,
-  },
-]
+import { createClient } from "@/lib/supabase"
+import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export default function TestimonialsSection() {
+  const [testimonials, setTestimonials] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchTestimonials() {
+      const { data } = await supabase.from("testimonials").select("*").order("created_at", { ascending: false })
+      if (data) {
+        setTestimonials(data)
+      }
+      setLoading(false)
+    }
+    fetchTestimonials()
+  }, [])
+
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -53,6 +44,9 @@ export default function TestimonialsSection() {
     },
   }
 
+  if (loading) return null
+  if (testimonials.length === 0) return null
+
   return (
     <section id="testimonials" className="py-20 bg-secondary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,7 +58,7 @@ export default function TestimonialsSection() {
         >
           <h2 className="text-4xl sm:text-5xl font-bold text-foreground mb-4">Client Testimonials</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            What my clients say about working with me
+            What clients say about working with me
           </p>
         </motion.div>
 
@@ -79,7 +73,7 @@ export default function TestimonialsSection() {
             <motion.div key={testimonial.id} variants={itemVariants} className="card hover:shadow-2xl">
               {/* Stars */}
               <div className="flex gap-1 mb-4">
-                {[...Array(testimonial.rating)].map((_, i) => (
+                {[...Array(testimonial.rating || 5)].map((_, i) => (
                   <Star key={i} size={16} className="fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
@@ -92,7 +86,13 @@ export default function TestimonialsSection() {
 
               {/* Author */}
               <div className="flex items-center gap-4 pt-4 border-t border-border">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent" />
+                {testimonial.image_url ? (
+                  <img src={testimonial.image_url} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
+                ) : (
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <p className="font-semibold text-foreground">{testimonial.name}</p>
                   <p className="text-xs text-muted-foreground">{testimonial.role}</p>

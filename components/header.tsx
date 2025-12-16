@@ -1,21 +1,25 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Menu } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
+import Image from "next/image"
+
 import { createClient } from "@/lib/supabase"
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [siteName, setSiteName] = useState("ProgrammingHero")
+  const [siteName, setSiteName] = useState("Aptic Studio")
+  const [logoUrl, setLogoUrl] = useState("/my-logo.png")
   const supabase = createClient()
 
   useEffect(() => {
     async function fetchSettings() {
-      const { data } = await supabase.from("site_settings").select("site_name").single()
-      if (data?.site_name) {
-        setSiteName(data.site_name)
+      const { data } = await supabase.from("site_settings").select("site_name, logo_url").single()
+      if (data) {
+        if (data.site_name) setSiteName(data.site_name)
+        if (data.logo_url) setLogoUrl(data.logo_url)
       }
     }
     fetchSettings()
@@ -33,9 +37,13 @@ export default function Header() {
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#7c3aed] to-[#ec4899] flex items-center justify-center text-white font-bold text-lg group-hover:scale-110 transition-transform">
-              {siteName.charAt(0)}
-            </div>
+            <Image
+              src={logoUrl}
+              alt={`${siteName} Logo`}
+              width={40}
+              height={40}
+              className="rounded-lg group-hover:scale-110 transition-transform object-cover"
+            />
             <span className="font-bold text-lg hidden sm:inline text-foreground">{siteName}</span>
           </Link>
 
