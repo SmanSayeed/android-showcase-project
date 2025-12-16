@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import ThemeToggle from "@/components/theme-toggle"
 import Link from "next/link"
 import { Bell, User, LogOut, Settings, ExternalLink, Menu } from "lucide-react"
 import { useRouter } from "next/navigation"
@@ -57,6 +58,8 @@ export default function AdminHeader({ onMenuClick }: { onMenuClick: () => void }
                     <ExternalLink size={16} />
                     Visit Site
                 </Link>
+
+                <ThemeToggle />
 
                 <button className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-full relative">
                     <Bell size={20} />

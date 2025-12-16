@@ -124,7 +124,7 @@ export default function ContactSection() {
                 value={formData.name}
                 onChange={handleChange}
                 required
-                className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               />
               <input
@@ -134,7 +134,7 @@ export default function ContactSection() {
                 value={formData.email}
                 onChange={handleChange}
                 required
-                className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               />
             </div>
@@ -146,14 +146,14 @@ export default function ContactSection() {
                 placeholder="Your Phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               />
               <select
                 name="projectType"
                 value={formData.projectType}
                 onChange={handleChange}
-                className="px-4 py-3 rounded-lg bg-secondary border border-border text-foreground focus:outline-none focus:border-primary transition-colors"
+                className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               >
                 <option value="web-development">Web Development</option>
@@ -170,7 +170,7 @@ export default function ContactSection() {
               onChange={handleChange}
               required
               rows={5}
-              className="w-full px-4 py-3 rounded-lg bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
+              className="w-full px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors resize-none"
               disabled={loading}
             />
 

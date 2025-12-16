@@ -42,42 +42,42 @@ export default function Footer() {
   }, [])
 
   return (
-    <footer className="bg-secondary border-t border-border py-12 mt-20">
+    <footer className="bg-[var(--footer-bg)] text-[var(--footer-text)] border-t border-border py-12 mt-20 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Footer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {/* Brand */}
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-2">
-               {/* Fallback to text if logoUrl is broken or empty, but keeping Image for now since it was there */}
-               <Image
+              {/* Fallback to text if logoUrl is broken or empty, but keeping Image for now since it was there */}
+              <Image
                 src={logoUrl}
                 alt={`${siteName} Logo`}
                 width={40}
                 height={40}
                 className="rounded-lg object-cover"
               />
-              <span className="font-bold text-foreground text-xl">{siteName}</span>
+              <span className="font-bold text-inherit text-xl">{siteName}</span>
             </div>
-            <p className="text-muted-foreground text-sm max-w-xs">
+            <p className="text-inherit/70 text-sm max-w-xs">
               Building beautiful and functional digital experiences.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
+            <h3 className="font-semibold text-inherit mb-4">Quick Links</h3>
             <nav className="flex flex-col gap-2">
-              <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/" className="text-inherit/70 hover:text-primary transition-colors">
                 Home
               </Link>
-              <Link href="/projects" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/projects" className="text-inherit/70 hover:text-primary transition-colors">
                 Projects
               </Link>
-              <Link href="/team" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/team" className="text-inherit/70 hover:text-primary transition-colors">
                 Team
               </Link>
-              <Link href="/#about" className="text-muted-foreground hover:text-primary transition-colors">
+              <Link href="/#about" className="text-inherit/70 hover:text-primary transition-colors">
                 About
               </Link>
             </nav>
@@ -85,15 +85,15 @@ export default function Footer() {
 
           {/* Social */}
           <div>
-            <h3 className="font-semibold text-foreground mb-4">Connect</h3>
+            <h3 className="font-semibold text-inherit mb-4">Connect</h3>
             <div className="flex gap-4">
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background hover:bg-primary text-foreground hover:text-white flex items-center justify-center transition-all">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background/10 hover:bg-primary text-inherit hover:text-white flex items-center justify-center transition-all">
                 <Linkedin size={20} />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background hover:bg-primary text-foreground hover:text-white flex items-center justify-center transition-all">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background/10 hover:bg-primary text-inherit hover:text-white flex items-center justify-center transition-all">
                 <Instagram size={20} />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background hover:bg-primary text-foreground hover:text-white flex items-center justify-center transition-all">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-lg bg-background/10 hover:bg-primary text-inherit hover:text-white flex items-center justify-center transition-all">
                 <Twitter size={20} />
               </a>
             </div>
@@ -101,9 +101,9 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="border-t border-border pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-sm">&copy; {currentYear} {siteName}. All rights reserved.</p>
-          <div className="flex gap-6 text-sm text-muted-foreground">
+        <div className="border-t border-border/20 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <p className="text-inherit/70 text-sm">&copy; {currentYear} {siteName}. All rights reserved.</p>
+          <div className="flex gap-6 text-sm text-inherit/70">
             <a href="#" className="hover:text-primary transition-colors">
               Privacy Policy
             </a>

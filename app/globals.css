@@ -4,64 +4,103 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Dark purple theme - same for both modes */
-  --background: #0d0518;
-  --foreground: #f0f0f0;
-  --card: #1a0d2e;
-  --card-foreground: #f0f0f0;
-  --primary: #7c3aed;
-  --primary-foreground: #ffffff;
-  --secondary: #1a0d2e;
-  --secondary-foreground: #f0f0f0;
-  --muted: #2d1b4e;
-  --muted-foreground: #a0a0a0;
-  --accent: #ec4899;
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #2d1b4e;
-  --input: #1a0d2e;
-  --ring: #c084fc;
-  --chart-1: #7c3aed;
-  --chart-2: #ec4899;
-  --chart-3: #c084fc;
-  --chart-4: #a855f7;
-  --chart-5: #e879f9;
+  /* Light Mode Theme (New Spec) */
+  --background: #F8FAFC;
+  --foreground: #1E293B;
+  /* Text Dark */
+
+  --card: #FFFFFF;
+  --card-foreground: #1E293B;
+
+  --popover: #FFFFFF;
+  --popover-foreground: #1E293B;
+
+  --primary: #2563EB;
+  /* Blue */
+  --primary-foreground: #FFFFFF;
+
+  --secondary: #7C3AED;
+  /* Purple */
+  --secondary-foreground: #FFFFFF;
+
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  /* Text Soft */
+
+  --accent: #F1F5F9;
+  --accent-foreground: #1E293B;
+
+  --destructive: #EF4444;
+  --destructive-foreground: #FFFFFF;
+
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --ring: #2563EB;
+
   --radius: 0.625rem;
-  --color-primary-light: #2d1b4e;
-  --color-bg: #0d0518;
-  --color-bg-secondary: #1a0d2e;
-  --color-text: #f0f0f0;
-  --color-text-secondary: #a0a0a0;
-  --glowing-purple: #c084fc;
-  --neon-purple: #b700ff;
-  --neon-pink: #ff1493;
+
+  /* Footer Specifics */
+  --footer-bg: #0F172A;
+  --footer-text: #CBD5E1;
+
+  /* Chart colors for light mode - derived or standard */
+  --chart-1: #2563EB;
+  --chart-2: #7C3AED;
+  --chart-3: #DB2777;
+  --chart-4: #D97706;
+  --chart-5: #059669;
+
+  /* Legacy/Custom vars adaptation */
+  --color-primary-light: #E0E7FF;
+  --color-bg: #F8FAFC;
+  --color-bg-secondary: #FFFFFF;
+  --color-text: #1E293B;
+  --color-text-secondary: #64748B;
+  --glowing-purple: #A78BFA;
+  --neon-purple: #7C3AED;
+  --neon-pink: #DB2777;
 }
 
 .dark {
-  /* Same dark purple theme */
+  /* Dark Mode Theme (Preserved Original) */
   --background: #0d0518;
   --foreground: #f0f0f0;
+
   --card: #1a0d2e;
   --card-foreground: #f0f0f0;
+
+  --popover: #1a0d2e;
+  --popover-foreground: #f0f0f0;
+
   --primary: #7c3aed;
   --primary-foreground: #ffffff;
+
   --secondary: #1a0d2e;
   --secondary-foreground: #f0f0f0;
+
   --muted: #2d1b4e;
   --muted-foreground: #a0a0a0;
+
   --accent: #ec4899;
   --accent-foreground: #ffffff;
+
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
+
   --border: #2d1b4e;
   --input: #1a0d2e;
   --ring: #c084fc;
+
+  /* Footer Specifics (Matching original bg-secondary look) */
+  --footer-bg: #1a0d2e;
+  --footer-text: #f0f0f0;
+
   --chart-1: #7c3aed;
   --chart-2: #ec4899;
   --chart-3: #c084fc;
   --chart-4: #a855f7;
   --chart-5: #e879f9;
+
   --color-primary-light: #2d1b4e;
   --color-bg: #0d0518;
   --color-bg-secondary: #1a0d2e;

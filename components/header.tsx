@@ -2,16 +2,24 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { Menu } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { Menu, ChevronDown, Monitor, Smartphone, Palette, Code, Folder, Layers, Star } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
 import Image from "next/image"
-
+import ThemeToggle from "./theme-toggle"
 import { createClient } from "@/lib/supabase"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [siteName, setSiteName] = useState("Aptic Studio")
   const [logoUrl, setLogoUrl] = useState("/my-logo.png")
+  const pathname = usePathname()
   const supabase = createClient()
 
   useEffect(() => {
@@ -25,11 +33,98 @@ export default function Header() {
     fetchSettings()
   }, [])
 
-  const navItems = [
-    { label: "Home", href: "#home" },
-    { label: "Services", href: "#services" },
-    { label: "Projects", href: "#projects" },
-  ]
+  const getLink = (href: string) => {
+    if (href.startsWith("#") && pathname !== "/") {
+      return `/${href}`
+    }
+    return href
+  }
+
+  // Helper to determine if a generic link is active is tricky with hash, so we'll just stick to simple hover styles
+  const navContent = (
+    <div className="hidden md:flex items-center gap-1">
+      <Link href={getLink("#home")} className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
+        Home
+      </Link>
+
+      {/* Services Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
+          Services <ChevronDown size={14} className="opacity-50" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-[300px] p-2">
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
+                <Monitor size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">Web Development</div>
+                <p className="text-xs text-muted-foreground mt-0.5">High-performance React & Next.js apps</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-purple-500/10 rounded-md text-purple-500">
+                <Smartphone size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">App Development</div>
+                <p className="text-xs text-muted-foreground mt-0.5">iOS & Android solutions</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-pink-500/10 rounded-md text-pink-500">
+                <Palette size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">UI/UX Design</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Beautiful user interfaces</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Projects Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
+          Projects <ChevronDown size={14} className="opacity-50" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-[300px] p-2">
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#projects")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-orange-500/10 rounded-md text-orange-500">
+                <Folder size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">All Projects</div>
+                <p className="text-xs text-muted-foreground mt-0.5">View our complete portfolio</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#projects")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-green-500/10 rounded-md text-green-500">
+                <Star size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">Featured</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Our highlight styling</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Link href="/team" className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
+        Team
+      </Link>
+    </div>
+  )
 
   return (
     <>
@@ -48,26 +143,17 @@ export default function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+          {navContent}
 
           {/* Contact Button & Mobile Menu */}
           <div className="flex items-center gap-4">
-            <a
-              href="#contact"
-              className="hidden md:inline-flex px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all"
+            <ThemeToggle />
+            <Link
+              href={getLink("#contact")}
+              className="hidden md:inline-flex px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
             >
               Contact Me
-            </a>
+            </Link>
             <button
               aria-label="Toggle mobile menu"
               className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"
