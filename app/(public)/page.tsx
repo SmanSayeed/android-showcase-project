@@ -11,7 +11,12 @@ export default function Home() {
       <HeroSection />
       <ServicesSection />
       <WhyChooseUs />
-      <ProjectsGrid />
+      <ProjectsGrid 
+        limit={4} 
+        viewAllHref="/projects" 
+        gridClassName="lg:grid-cols-2"
+      />
+
       <TestimonialsSection />
       <ContactSection />
     </>

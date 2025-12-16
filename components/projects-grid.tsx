@@ -7,10 +7,23 @@ import Link from "next/link"
 import ProjectCard from "./project-card"
 import { createClient } from "@/lib/supabase"
 import ProjectsSkeleton from "./skeletons/projects-skeleton"
+import { cn } from "@/lib/utils"
 
-const PAGE_SIZE = 6
+interface ProjectsGridProps {
+  className?: string
+  gridClassName?: string
+  limit?: number
+  viewAllHref?: string
+  showTitle?: boolean
+}
 
-export default function ProjectsGrid() {
+export default function ProjectsGrid({ 
+  className,
+  gridClassName,
+  limit = 6,
+  viewAllHref,
+  showTitle = true
+}: ProjectsGridProps) {
   const supabase = createClient()
 
   const [projects, setProjects] = useState<any[]>([])
@@ -21,7 +34,7 @@ export default function ProjectsGrid() {
   const fetchProjects = async (offset: number) => {
     try {
       const from = offset
-      const to = offset + PAGE_SIZE - 1
+      const to = offset + limit - 1
 
       const { data, error } = await supabase
         .from("projects")
@@ -35,13 +48,16 @@ export default function ProjectsGrid() {
       console.log(`Fetched ${data.length} projects. From: ${from}, To: ${to}`)
 
       setProjects((prev) => {
-        // Just append, trust the offset
+        // If we are just viewing a fixed set (viewAllHref is present), we might not want to append if we're reloading? 
+        // But typically fetchProjects(0) is called once. 
+        // If offset is 0, replace. Else append.
+        if (offset === 0) return data
         return [...prev, ...data]
       })
 
-      // if (data.length < PAGE_SIZE) {
-      //   setHasMore(false)
-      // }
+      if (data.length < limit) {
+        setHasMore(false)
+      }
     } catch (error) {
       console.log(error)
       toast.error("Failed to load projects")
@@ -54,30 +70,32 @@ export default function ProjectsGrid() {
   }, [])
 
   const handleLoadMore = async () => {
-    if (loadingMore || !hasMore) return
+    if (loadingMore || !hasMore || viewAllHref) return
     setLoadingMore(true)
     await fetchProjects(projects.length)
     setLoadingMore(false)
   }
 
   return (
-    <section id="projects" className="py-20 bg-background">
+    <section id="projects" className={`py-20 bg-background ${className || ""}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl sm:text-5xl font-bold mb-4">
-            Featured Projects
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Explore a selection of my recent work
-          </p>
-        </motion.div>
+        {showTitle && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+              Featured Projects
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Explore a selection of my recent work
+            </p>
+          </motion.div>
+        )}
 
         {/* Projects */}
         {loading ? (
@@ -85,7 +103,10 @@ export default function ProjectsGrid() {
         ) : (
           <>
             <motion.div
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              className={cn(
+                "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6",
+                gridClassName
+              )}
               initial="hidden"
               animate="visible"
               variants={{
@@ -110,15 +131,24 @@ export default function ProjectsGrid() {
             </motion.div>
 
             {/* Load More Button */}
-            {hasMore && (
+            {(hasMore || viewAllHref) && (
               <div className="mt-12 flex justify-center">
-                <button
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                  className="px-8 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90 disabled:opacity-50"
-                >
-                  {loadingMore ? "Loading..." : "Load More"}
-                </button>
+                {viewAllHref ? (
+                   <Link
+                     href={viewAllHref}
+                     className="px-8 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90"
+                   >
+                     Load More
+                   </Link>
+                ) : (
+                  <button
+                    onClick={handleLoadMore}
+                    disabled={loadingMore}
+                    className="px-8 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90 disabled:opacity-50"
+                  >
+                    {loadingMore ? "Loading..." : "Load More"}
+                  </button>
+                )}
               </div>
             )}
           </>
