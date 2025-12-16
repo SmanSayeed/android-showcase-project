@@ -95,24 +95,24 @@ export default function ProjectEditor({ params }: { params: Promise<{ id?: strin
         newList.splice(index, 1)
         listUpdater(newList)
     }
-const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
 
         try {
             const { saveProject } = await import("../actions")
-            
+
             const response = await saveProject(formData, isEditMode, resolvedParams.id)
-if (response?.error) {
-  toast.error(response.error)
-  setLoading(false)
-  return
-}
+            if (response?.error) {
+                toast.error(response.error)
+                setLoading(false)
+                return
+            }
 
             toast.success(isEditMode ? "Project updated" : "Project created")
             router.push("/admin/projects")
         } catch (err) {
-            console.error("Unexpected error:", err)
+            console.log("Unexpected error:", err)
             toast.error("Unexpected error occurred")
         } finally {
             setLoading(false)

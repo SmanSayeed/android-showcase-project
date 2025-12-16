@@ -45,23 +45,23 @@ export default function SettingsPage() {
         };
 
         let error;
-        
+
         if (settings.id) {
-             const { error: updateError } = await supabase
+            const { error: updateError } = await supabase
                 .from("site_settings")
                 .update(payload)
                 .eq("id", settings.id)
-             error = updateError;
+            error = updateError;
         } else {
-             // Fallback for empty table
-             const { error: insertError } = await supabase
+            // Fallback for empty table
+            const { error: insertError } = await supabase
                 .from("site_settings")
                 .insert([payload])
-             error = insertError;
+            error = insertError;
         }
 
         if (error) {
-            console.error("Save error:", error)
+            console.log("Save error:", error)
             toast.error(`Failed to save: ${error.message}`)
         } else {
             toast.success("Settings saved successfully")

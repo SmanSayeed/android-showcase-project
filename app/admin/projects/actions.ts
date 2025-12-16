@@ -32,7 +32,7 @@ export async function saveProject(
     }
 
     if (result.error) {
-      console.error("Server Action Supabase Error:", result.error)
+      console.log("Server Action Supabase Error:", result.error)
       return { error: result.error.message || "Database error occurred" }
     }
 
@@ -42,7 +42,7 @@ export async function saveProject(
     return { success: true }
 
   } catch (err: any) {
-    console.error("Server Action Unexpected Error:", err)
+    console.log("Server Action Unexpected Error:", err)
     return { error: err.message || "An unexpected error occurred" }
   }
 }

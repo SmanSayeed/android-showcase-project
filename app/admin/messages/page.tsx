@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase"
 import { Mail, Clock, RefreshCw, Smartphone } from "lucide-react"
 import { toast } from "sonner"
 import { motion } from "framer-motion"
+import { getContactMessages } from "@/app/actions/contact"
 
 interface Message {
   id: number
@@ -50,15 +51,11 @@ export default function MessagesPage() {
     setRefreshing(true)
 
     try {
-      const { data, error } = await supabase
-        .from("contact_messages")
-        .select("*")
-        .order("id", { ascending: false }) // always correct order
-
-      if (error) throw error
+      // Use Server Action to bypass RLS if using secret login
+      const data = await getContactMessages()
       if (data) setMessages(data)
     } catch (error) {
-      console.error("Error fetching messages:", error)
+      console.log("Error fetching messages:", error)
       toast.error("Failed to load messages")
     } finally {
       setLoading(false)
