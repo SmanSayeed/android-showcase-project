@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, ChevronDown, Monitor, Smartphone, Palette, Code, Folder, Layers, Star } from "lucide-react"
+import { Menu, ChevronDown, Smartphone, Palette, Code, Folder, Layers, Star, Gamepad2 } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
 import Image from "next/image"
 import ThemeToggle from "./theme-toggle"
@@ -55,23 +55,34 @@ export default function Header() {
         <DropdownMenuContent align="start" className="w-[300px] p-2">
           <DropdownMenuItem asChild>
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
-              <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
-                <Monitor size={20} />
-              </div>
-              <div>
-                <div className="font-semibold text-foreground">Web Development</div>
-                <p className="text-xs text-muted-foreground mt-0.5">High-performance React & Next.js apps</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-purple-500/10 rounded-md text-purple-500">
                 <Smartphone size={20} />
               </div>
               <div>
                 <div className="font-semibold text-foreground">App Development</div>
-                <p className="text-xs text-muted-foreground mt-0.5">iOS & Android solutions</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Cross-platform & Android</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
+                <Code size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">iOS App Development</div>
+                <p className="text-xs text-muted-foreground mt-0.5">Native iOS solutions</p>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
+              <div className="p-2 bg-red-500/10 rounded-md text-red-500">
+                <Gamepad2 size={20} />
+              </div>
+              <div>
+                <div className="font-semibold text-foreground">Mobile Game Development</div>
+                <p className="text-xs text-muted-foreground mt-0.5">2D & 3D Game Experiences</p>
               </div>
             </Link>
           </DropdownMenuItem>
