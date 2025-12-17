@@ -150,7 +150,9 @@ export default function Header() {
               height={40}
               className="rounded-lg group-hover:scale-110 transition-transform object-cover"
             />
-            <span className="font-bold text-lg text-foreground">{siteName}</span>
+          <span className="font-bold text-lg text-foreground">
+  {siteName || "ApticStudio"}
+</span>
           </Link>
 
           {/* Desktop Navigation */}
