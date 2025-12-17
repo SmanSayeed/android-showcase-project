@@ -1,14 +1,26 @@
 "use client"
 
+import { useEffect } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
-import { X, Monitor, Smartphone, Palette, Folder, Star, ChevronDown } from "lucide-react"
+import { 
+  Monitor, 
+  Smartphone, 
+  Palette, 
+  Folder, 
+  Star, 
+  Home, 
+  Users, 
+  Mail,
+  ChevronDown 
+} from "lucide-react"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { cn } from "@/lib/utils"
 
 interface MobileDrawerProps {
   isOpen: boolean
@@ -25,96 +37,153 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     return href
   }
 
+  // Handle Escape key to close
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, onClose])
+
   return (
     <>
       {/* Backdrop */}
-      {isOpen && <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={onClose} />}
+      <div 
+        className={cn(
+          "fixed inset-0 bg-black/60 z-90 transition-opacity duration-300 md:hidden",
+          isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        )}
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
       {/* Drawer */}
       <div
-        className={`fixed left-0 top-0 h-full w-80 bg-background border-r border-border z-50 transform transition-transform duration-300 md:hidden overflow-y-auto ${isOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={cn(
+          "fixed right-0 top-0 h-full w-[85vw] max-w-[320px] bg-background z-100 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl border-l border-border",
+          isOpen ? "translate-x-0" : "translate-x-full"
+        )}
       >
-        <div className="p-6 flex flex-col gap-6">
-          {/* Close Button */}
-          <button onClick={onClose} className="self-end p-2 hover:bg-muted rounded-lg">
-            <X size={24} className="text-foreground" />
-          </button>
+        {/* Drawer Header */}
+        <div className="h-40 min-h-[160px] p-6 flex items-end bg-linear-to-br from-[#c084fc]/20 via-background to-[#ec4899]/20 border-b border-border/50">
+          <div className="flex flex-col gap-1">
+             <h1 className="text-2xl font-bold bg-gradient-to-r from-[#c084fc] to-[#ec4899] bg-clip-text text-transparent tracking-tight">ApticStudio</h1>
+             <p className="text-sm text-foreground/60 font-medium">Digital Solutions</p>
+          </div>
+        </div>
 
-          {/* Navigation Items */}
-          <nav className="flex flex-col gap-2">
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto py-2">
+          <nav className="flex flex-col">
+            {/* Home */}
             <Link
               href={getLink("#home")}
-              className="text-lg font-semibold text-foreground hover:text-primary transition-colors px-4 py-3 rounded-lg hover:bg-muted"
+              className="flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors"
               onClick={onClose}
             >
-              Home
+              <Home size={24} strokeWidth={1.5} />
+              <span className="font-medium text-base">Home</span>
             </Link>
 
+            {/* Services Accordion */}
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="services" className="border-none">
-                <AccordionTrigger className="text-lg font-semibold text-foreground hover:text-primary px-4 py-3 hover:no-underline hover:bg-muted rounded-lg">
-                  Services
+                <AccordionTrigger className="w-full flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors hover:no-underline data-[state=open]:text-primary group">
+                  <div className="flex items-center gap-4">
+                     <Monitor size={24} strokeWidth={1.5} className="group-data-[state=open]:text-primary" />
+                     <span className="font-medium text-base">Services</span>
+                  </div>
                 </AccordionTrigger>
-                <AccordionContent className="pb-2 pt-1 px-4">
-                  <div className="flex flex-col gap-2 pl-4 border-l border-border ml-2">
-                    <Link href={getLink("#services")} onClick={onClose} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted group">
-                      <div className="p-1.5 bg-blue-500/10 rounded-md text-blue-500">
-                        <Monitor size={16} />
-                      </div>
-                      <span className="font-medium text-foreground group-hover:text-primary">Web Development</span>
+                <AccordionContent className="pb-2 pt-0">
+                  <div className="flex flex-col">
+                    <Link 
+                      href={getLink("#services")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Monitor size={16} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">Web Development</span>
                     </Link>
-                    <Link href={getLink("#services")} onClick={onClose} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted group">
-                      <div className="p-1.5 bg-purple-500/10 rounded-md text-purple-500">
-                        <Smartphone size={16} />
-                      </div>
-                      <span className="font-medium text-foreground group-hover:text-primary">App Development</span>
+                    <Link 
+                      href={getLink("#services")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Smartphone size={16} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">App Development</span>
                     </Link>
-                    <Link href={getLink("#services")} onClick={onClose} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted group">
-                      <div className="p-1.5 bg-pink-500/10 rounded-md text-pink-500">
-                        <Palette size={16} />
-                      </div>
-                      <span className="font-medium text-foreground group-hover:text-primary">UI/UX Design</span>
+                    <Link 
+                      href={getLink("#services")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Palette size={16} className="text-pink-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">UI/UX Design</span>
                     </Link>
                   </div>
                 </AccordionContent>
               </AccordionItem>
 
+              {/* Projects Accordion */}
               <AccordionItem value="projects" className="border-none">
-                <AccordionTrigger className="text-lg font-semibold text-foreground hover:text-primary px-4 py-3 hover:no-underline hover:bg-muted rounded-lg">
-                  Projects
+                <AccordionTrigger className="w-full flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors hover:no-underline data-[state=open]:text-primary group">
+                  <div className="flex items-center gap-4">
+                     <Folder size={24} strokeWidth={1.5} className="group-data-[state=open]:text-primary" />
+                     <span className="font-medium text-base">Projects</span>
+                  </div>
                 </AccordionTrigger>
-                <AccordionContent className="pb-2 pt-1 px-4">
-                  <div className="flex flex-col gap-2 pl-4 border-l border-border ml-2">
-                    <Link href={getLink("#projects")} onClick={onClose} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted group">
-                      <div className="p-1.5 bg-orange-500/10 rounded-md text-orange-500">
-                        <Folder size={16} />
-                      </div>
-                      <span className="font-medium text-foreground group-hover:text-primary">All Projects</span>
+                <AccordionContent className="pb-2 pt-0">
+                  <div className="flex flex-col">
+                    <Link 
+                      href={getLink("#projects")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Folder size={16} className="text-orange-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">All Projects</span>
                     </Link>
-                    <Link href={getLink("#projects")} onClick={onClose} className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted group">
-                      <div className="p-1.5 bg-green-500/10 rounded-md text-green-500">
-                        <Star size={16} />
-                      </div>
-                      <span className="font-medium text-foreground group-hover:text-primary">Featured</span>
+                    <Link 
+                      href={getLink("#projects")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Star size={16} className="text-green-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">Featured</span>
                     </Link>
                   </div>
                 </AccordionContent>
               </AccordionItem>
+
             </Accordion>
 
+            {/* Team */}
             <Link
               href="/team"
-              className="text-lg font-semibold text-foreground hover:text-primary transition-colors px-4 py-3 rounded-lg hover:bg-muted"
+              className="flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors"
               onClick={onClose}
             >
-              Team
+              <Users size={24} strokeWidth={1.5} />
+              <span className="font-medium text-base">Team</span>
             </Link>
 
-            <Link href={getLink("#contact")} className="button-primary mt-4 text-center mx-4" onClick={onClose}>
-              Contact Me
+            {/* Contact */}
+            <Link
+              href={getLink("#contact")}
+              className="flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors"
+              onClick={onClose}
+            >
+              <Mail size={24} strokeWidth={1.5} />
+              <span className="font-medium text-base">Contact Me</span>
             </Link>
           </nav>
+        </div>
+        
+        {/* Footer Area (Optional version/copyright) */}
+        <div className="p-6 border-t border-border/50 text-xs text-muted-foreground text-center">
+          © 2025 ApticStudio
         </div>
       </div>
     </>
