@@ -81,7 +81,7 @@ export default function WhyChooseUs() {
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex flex-col-reverse md:flex-row items-center h-auto md:min-h-[400px]">
+          <div className="flex flex-col md:flex-row items-center h-auto md:min-h-[400px]">
             {/* Left: Content */}
             <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
               <h3 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">Our Team</h3>
@@ -97,13 +97,13 @@ export default function WhyChooseUs() {
             </div>
 
             {/* Right: Image */}
-            <div className="w-full md:w-1/2 relative h-64 md:h-[400px] bg-white dark:bg-muted/10 flex items-center justify-center p-8">
+            <div className="w-full md:w-1/2 relative flex items-center justify-center p-6 md:p-8 bg-white dark:bg-muted/10">
               {/* Flat Vector Illustration */}
-              <img
-                src="/team-illustration.png"
-                alt="Our Team Illustration"
-                className="w-full h-full object-contain"
-              />
+             <img
+  src="/team-illustration.png"
+  alt="Our Team Illustration"
+  className="w-full max-w-xs md:max-w-none h-auto object-contain"
+/>
             </div>
           </div>
         </motion.div>
