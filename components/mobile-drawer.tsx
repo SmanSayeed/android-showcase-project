@@ -70,7 +70,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
         {/* Drawer Header */}
         <div className="h-40 min-h-[160px] p-6 flex items-end bg-linear-to-br from-[#c084fc]/20 via-background to-[#ec4899]/20 border-b border-border/50">
           <div className="flex flex-col gap-1">
-             <h1 className="text-2xl font-bold bg-gradient-to-r from-[#c084fc] to-[#ec4899] bg-clip-text text-transparent tracking-tight">ApticStudio</h1>
+             <h1 className="text-2xl font-bold bg-linear-to-r from-[#c084fc] to-[#ec4899] bg-clip-text text-transparent tracking-tight">ApticStudio</h1>
              <p className="text-sm text-foreground/60 font-medium">Digital Solutions</p>
           </div>
         </div>

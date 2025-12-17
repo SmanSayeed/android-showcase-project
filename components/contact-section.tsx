@@ -3,9 +3,16 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Mail, Phone, MapPin, Send, Loader2 } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Loader2, Monitor, Smartphone, Palette, HelpCircle } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { toast } from "sonner"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -149,18 +156,61 @@ export default function ContactSection() {
                 className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               />
-              <select
-                name="projectType"
+              <Select
                 value={formData.projectType}
-                onChange={handleChange}
-                className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:outline-none focus:border-primary transition-colors"
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, projectType: value }))}
                 disabled={loading}
               >
-                <option value="web-development">Web Development</option>
-                <option value="design">Design</option>
-                <option value="consulting">Consulting</option>
-                <option value="other">Other</option>
-              </select>
+                <SelectTrigger className="h-auto py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:ring-primary">
+                  <SelectValue placeholder="Select Project Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="web-development" className="cursor-pointer">
+                    <div className="flex items-start gap-3 py-1">
+                      <div className="p-2 bg-blue-500/10 rounded-md text-blue-500 mt-0.5">
+                        <Monitor size={18} />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold text-foreground">Web Development</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">High-performance React & Next.js apps</p>
+                      </div>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="app-development" className="cursor-pointer">
+                    <div className="flex items-start gap-3 py-1">
+                      <div className="p-2 bg-purple-500/10 rounded-md text-purple-500 mt-0.5">
+                        <Smartphone size={18} />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold text-foreground">App Development</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">iOS & Android solutions</p>
+                      </div>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ui-ux-design" className="cursor-pointer">
+                    <div className="flex items-start gap-3 py-1">
+                      <div className="p-2 bg-pink-500/10 rounded-md text-pink-500 mt-0.5">
+                        <Palette size={18} />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold text-foreground">UI/UX Design</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">Beautiful user interfaces</p>
+                      </div>
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="other" className="cursor-pointer">
+                    <div className="flex items-start gap-3 py-1">
+                      <div className="p-2 bg-gray-500/10 rounded-md text-gray-500 mt-0.5">
+                        <HelpCircle size={18} />
+                      </div>
+                      <div className="text-left">
+                        <div className="font-semibold text-foreground">Other</div>
+                        <p className="text-xs text-muted-foreground mt-0.5">General inquiries or other projects</p>
+                      </div>
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <textarea
