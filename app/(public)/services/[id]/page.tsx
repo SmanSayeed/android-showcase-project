@@ -28,7 +28,7 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                 {/* Header */}
                 <div className="bg-card border border-border rounded-2xl p-8 md:p-12 mb-12">
                     <div
-                        className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-8`}
+                        className={`w-20 h-20 rounded-2xl bg-linear-to-br ${service.color} flex items-center justify-center mb-8`}
                     >
                         <Icon className="w-10 h-10 text-white" />
                     </div>
@@ -50,7 +50,7 @@ export default async function ServicePage({ params }: { params: Promise<{ id: st
                         </ul>
                     </div>
 
-                    <div className="bg-gradient-to-br from-primary/10 to-accent/10 border border-border rounded-xl p-8 flex flex-col justify-center items-center text-center">
+                    <div className="bg-linear-to-br from-primary/10 to-accent/10 border border-border rounded-xl p-8 flex flex-col justify-center items-center text-center">
                         <h3 className="text-2xl font-bold text-foreground mb-4">Ready to Start?</h3>
                         <p className="text-muted-foreground mb-8">Let's turn your idea into reality with our expert development team.</p>
                         <Link

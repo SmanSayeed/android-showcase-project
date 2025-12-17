@@ -63,7 +63,7 @@ export default function WhyChooseUs() {
             <motion.div key={index} variants={itemVariants}>
               <div className="flex items-start gap-4 p-6 bg-card border border-border rounded-xl hover:border-primary transition-all duration-300 hover:bg-muted group">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-6 w-6 rounded-md bg-gradient-to-r from-[#c084fc] to-[#ec4899] group-hover:scale-110 transition-transform">
+                  <div className="flex items-center justify-center h-6 w-6 rounded-md bg-linear-to-r from-[#c084fc] to-[#ec4899] group-hover:scale-110 transition-transform">
                     <Check className="h-4 w-4 text-white" />
                   </div>
                 </div>

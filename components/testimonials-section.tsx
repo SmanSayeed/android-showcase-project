@@ -80,7 +80,7 @@ export default function TestimonialsSection() {
 
               {/* Quote */}
               <div className="flex gap-2 mb-4">
-                <Quote size={20} className="text-primary flex-shrink-0" />
+                <Quote size={20} className="text-primary shrink-0" />
                 <p className="text-foreground text-sm leading-relaxed">{testimonial.content}</p>
               </div>
 
@@ -89,7 +89,7 @@ export default function TestimonialsSection() {
                 {testimonial.image_url ? (
                   <img src={testimonial.image_url} alt={testimonial.name} className="w-12 h-12 rounded-full object-cover" />
                 ) : (
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+                  <div className="w-12 h-12 rounded-full bg-linear-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
                     {testimonial.name.charAt(0)}
                   </div>
                 )}

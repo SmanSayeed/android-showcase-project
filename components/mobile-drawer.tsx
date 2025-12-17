@@ -184,6 +184,23 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               <span className="font-medium text-base">Team</span>
             </Link>
 
+            {/* Contact Us */}
+<Link
+  href={getLink("#contact")}
+  className="
+    flex items-center gap-4
+    px-6 py-4
+    text-foreground/80
+    hover:bg-muted/50
+    hover:text-primary
+    transition-colors
+  "
+  onClick={onClose}
+>
+  <Mail size={24} strokeWidth={1.5} />
+  <span className="font-medium text-base">Contact Us</span>
+</Link>
+
         
           </nav>
         </div>

@@ -161,11 +161,44 @@ export default function ContactSection() {
                 onValueChange={(value) => setFormData((prev) => ({ ...prev, projectType: value }))}
                 disabled={loading}
               >
-                <SelectTrigger className="h-auto py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:ring-primary">
+                <SelectTrigger className="h-auto py-3 px-4 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all shadow-sm">
                   <SelectValue placeholder="Select Project Type" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="web-development" className="cursor-pointer">
+                <SelectContent
+                sideOffset={8}
+  className="
+    w-[calc(100vw-2rem)] sm:w-(--radix-select-trigger-width)
+    max-h-[60vh]
+    overflow-y-auto
+    p-1.5
+    mt-2
+
+    rounded-xl
+    border border-border/50
+    bg-background/95
+    dark:bg-background/95
+    text-foreground
+
+    shadow-xl
+    backdrop-blur-md
+  ">
+                  <SelectItem value="web-development"
+  className="
+    cursor-pointer
+  rounded-lg
+  px-3 py-2.5
+  mb-1
+  transition-all
+
+  hover:bg-accent
+  focus:bg-accent
+  focus:text-accent-foreground
+
+  data-[state=checked]:bg-primary/10
+  data-[state=checked]:text-primary
+  data-[state=checked]:border-primary/20
+  data-[state=checked]:shadow-none
+  ">
                     <div className="flex items-start gap-3 py-1">
                       <div className="p-2 bg-blue-500/10 rounded-md text-blue-500 mt-0.5">
                         <Monitor size={18} />
@@ -176,7 +209,22 @@ export default function ContactSection() {
                       </div>
                     </div>
                   </SelectItem>
-                  <SelectItem value="app-development" className="cursor-pointer">
+                  <SelectItem value="app-development"
+  className="
+    cursor-pointer
+  rounded-lg
+  px-3 py-2.5
+  mb-1
+  transition-all
+
+  hover:bg-accent
+  focus:bg-accent
+  focus:text-accent-foreground
+
+  data-[state=checked]:bg-primary/10
+  data-[state=checked]:text-primary
+  data-[state=checked]:border-primary/20
+  data-[state=checked]:shadow-none">
                     <div className="flex items-start gap-3 py-1">
                       <div className="p-2 bg-purple-500/10 rounded-md text-purple-500 mt-0.5">
                         <Smartphone size={18} />
@@ -187,9 +235,24 @@ export default function ContactSection() {
                       </div>
                     </div>
                   </SelectItem>
-                  <SelectItem value="ui-ux-design" className="cursor-pointer">
+                  <SelectItem value="ui-ux-design"
+  className="
+    cursor-pointer
+  rounded-lg
+  px-3 py-2.5
+  mb-1
+  transition-all
+
+  hover:bg-accent
+  focus:bg-accent
+  focus:text-accent-foreground
+
+  data-[state=checked]:bg-primary/10
+  data-[state=checked]:text-primary
+  data-[state=checked]:border-primary/20
+  data-[state=checked]:shadow-none">
                     <div className="flex items-start gap-3 py-1">
-                      <div className="p-2 bg-pink-500/10 rounded-md text-pink-500 mt-0.5">
+                      <div className="p-2 bg-orange-500/10 rounded-md text-orange-500 mt-0.5">
                         <Palette size={18} />
                       </div>
                       <div className="text-left">
@@ -198,7 +261,22 @@ export default function ContactSection() {
                       </div>
                     </div>
                   </SelectItem>
-                  <SelectItem value="other" className="cursor-pointer">
+                  <SelectItem value="other"
+  className="
+    cursor-pointer
+  rounded-lg
+  px-3 py-2.5
+  mb-1
+  transition-all
+
+  hover:bg-accent
+  focus:bg-accent
+  focus:text-accent-foreground
+
+  data-[state=checked]:bg-primary/10
+  data-[state=checked]:text-primary
+  data-[state=checked]:border-primary/20
+  data-[state=checked]:shadow-none">
                     <div className="flex items-start gap-3 py-1">
                       <div className="p-2 bg-gray-500/10 rounded-md text-gray-500 mt-0.5">
                         <HelpCircle size={18} />

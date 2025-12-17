@@ -58,11 +58,11 @@ export default function HeroSection() {
               className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-foreground text-pretty"
             >
               We Build Powerful{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#3b82f6] to-[#60a5fa]">
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-[#3b82f6] to-[#60a5fa]">
                 Android
               </span>
-              , <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#ec4899] to-[#f472b6]">iOS</span>{" "}
-              & <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8b5cf6] to-[#a78bfa]">Game</span>{" "}
+              , <span className="text-transparent bg-clip-text bg-linear-to-r from-[#ec4899] to-[#f472b6]">iOS</span>{" "}
+              & <span className="text-transparent bg-clip-text bg-linear-to-r from-[#8b5cf6] to-[#a78bfa]">Game</span>{" "}
               Applications For Your Business.
             </motion.h1>
 
@@ -78,7 +78,7 @@ export default function HeroSection() {
   <Link
     href="#contact"
     className="w-full sm:w-auto px-6 py-3 rounded-xl font-semibold
-               bg-gradient-to-r from-[#3b82f6] to-[#7c3aed]
+               bg-linear-to-r from-[#3b82f6] to-[#7c3aed]
                text-white text-center
                hover:shadow-lg hover:shadow-blue-500/40
                active:scale-[0.98]
@@ -107,7 +107,7 @@ export default function HeroSection() {
 
           {/* Right Content - Lottie Animation */}
           <motion.div variants={itemVariants} className="relative flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#c084fc] via-transparent to-[#ec4899] opacity-20 blur-3xl -z-10" />
+            <div className="absolute inset-0 bg-linear-to-b from-[#c084fc] via-transparent to-[#ec4899] opacity-20 blur-3xl -z-10" />
             <LottiePlayer />
           </motion.div>
         </motion.div>

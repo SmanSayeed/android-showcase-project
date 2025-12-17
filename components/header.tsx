@@ -52,7 +52,16 @@ export default function Header() {
         <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
           Services <ChevronDown size={14} className="opacity-50" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-[300px] p-2">
+        <DropdownMenuContent
+  align="start"
+  className="
+    w-[300px] p-2
+    bg-white dark:bg-gray-900
+    border border-gray-200 dark:border-gray-700
+    shadow-xl
+    rounded-xl
+  "
+>
           <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-purple-500/10 rounded-md text-purple-500">
@@ -105,7 +114,16 @@ export default function Header() {
         <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
           Projects <ChevronDown size={14} className="opacity-50" />
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="start" className="w-[300px] p-2">
+        <DropdownMenuContent
+  align="start"
+  className="
+    w-[300px] p-2
+    bg-white dark:bg-gray-900
+    border border-gray-200 dark:border-gray-700
+    shadow-xl
+    rounded-xl
+  "
+>
           <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#projects")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-orange-500/10 rounded-md text-orange-500">
@@ -163,7 +181,7 @@ export default function Header() {
             <ThemeToggle />
             <Link
               href={getLink("#contact")}
-              className="hidden md:inline-flex px-6 py-2 rounded-lg font-semibold bg-gradient-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
+              className="hidden md:inline-flex px-6 py-2 rounded-lg font-semibold bg-linear-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
             >
               Contact Me
             </Link>

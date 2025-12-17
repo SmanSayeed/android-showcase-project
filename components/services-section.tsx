@@ -57,13 +57,13 @@ export default function ServicesSection() {
                     <div className="bg-card border border-border rounded-xl p-8 hover:border-primary transition-all duration-300 h-full hover:bg-muted hover:shadow-lg hover:shadow-primary/20">
                       {/* Icon Container */}
                       <div
-                        className={`w-16 h-16 rounded-xl bg-gradient-to-br ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                        className={`w-16 h-16 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
                       >
                         <Icon className="w-8 h-8 text-white" />
                       </div>
 
                       {/* Content */}
-                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-[#c084fc] group-hover:to-[#ec4899] group-hover:bg-clip-text transition-all">
+                      <h3 className="text-xl font-bold text-foreground mb-3 group-hover:text-transparent group-hover:bg-linear-to-r group-hover:from-[#c084fc] group-hover:to-[#ec4899] group-hover:bg-clip-text transition-all">
                         {service.title}
                       </h3>
                       <p className="text-muted-foreground text-sm leading-relaxed mb-6">{service.description}</p>

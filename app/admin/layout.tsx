@@ -76,13 +76,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
             {/* Sidebar */}
             <aside
-                className={`fixed md:relative flex-shrink-0 w-64 h-full bg-card border-r border-border z-50 transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+                className={`fixed md:relative shrink-0 w-64 h-full bg-card border-r border-border z-50 transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
                     }`}
             >
                 <div className="flex flex-col h-full">
                     <div className="h-16 flex items-center px-6 border-b border-border">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
+                            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-accent flex items-center justify-center text-white font-bold">
                                 A
                             </div>
                             <h1 className="text-lg font-bold">Admin Panel</h1>
