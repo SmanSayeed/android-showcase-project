@@ -1,6 +1,4 @@
-"use client"
-
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { 
@@ -12,7 +10,9 @@ import {
   Home, 
   Users, 
   Mail,
-  ChevronDown 
+  ChevronDown,
+  Code,
+  Gamepad2
 } from "lucide-react"
 import {
   Accordion,
@@ -29,6 +29,11 @@ interface MobileDrawerProps {
 
 export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
   const pathname = usePathname()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const getLink = (href: string) => {
     if (href.startsWith("#") && pathname !== "/") {
@@ -48,12 +53,14 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [isOpen, onClose])
 
+  if (!isMounted) return null
+
   return (
     <>
       {/* Backdrop */}
       <div 
         className={cn(
-          "fixed inset-0 bg-black/60 z-90 transition-opacity duration-300 md:hidden",
+          "fixed inset-0 bg-black/60 z-[90] transition-opacity duration-300 md:hidden",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
         onClick={onClose}
@@ -63,7 +70,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       {/* Drawer */}
       <div
         className={cn(
-          "fixed right-0 top-0 h-full w-[85vw] max-w-[320px] bg-background z-100 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl border-l border-border",
+          "fixed right-0 top-0 h-full w-[85vw] max-w-[320px] bg-background z-[100] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl border-l border-border",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -93,7 +100,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               <AccordionItem value="services" className="border-none">
                 <AccordionTrigger className="w-full flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors hover:no-underline data-[state=open]:text-primary group">
                   <div className="flex items-center gap-4">
-                     <Monitor size={24} strokeWidth={1.5} className="group-data-[state=open]:text-primary" />
+                     <Smartphone size={24} strokeWidth={1.5} className="group-data-[state=open]:text-primary" />
                      <span className="font-medium text-base">Services</span>
                   </div>
                 </AccordionTrigger>
@@ -104,16 +111,24 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                       onClick={onClose} 
                       className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
                     >
-                      <Monitor size={16} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
-                      <span className="font-medium group-hover/item:text-foreground transition-colors">Web Development</span>
+                      <Smartphone size={16} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">App Development</span>
                     </Link>
                     <Link 
                       href={getLink("#services")} 
                       onClick={onClose} 
                       className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
                     >
-                      <Smartphone size={16} className="text-purple-500 group-hover/item:scale-110 transition-transform" />
-                      <span className="font-medium group-hover/item:text-foreground transition-colors">App Development</span>
+                      <Code size={16} className="text-blue-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">iOS App Development</span>
+                    </Link>
+                    <Link 
+                      href={getLink("#services")} 
+                      onClick={onClose} 
+                      className="flex items-center gap-4 pl-18 pr-6 py-3 text-sm text-muted-foreground hover:bg-muted/30 transition-colors group/item"
+                    >
+                      <Gamepad2 size={16} className="text-red-500 group-hover/item:scale-110 transition-transform" />
+                      <span className="font-medium group-hover/item:text-foreground transition-colors">Mobile Game Development</span>
                     </Link>
                     <Link 
                       href={getLink("#services")} 
@@ -169,15 +184,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
               <span className="font-medium text-base">Team</span>
             </Link>
 
-            {/* Contact */}
-            <Link
-              href={getLink("#contact")}
-              className="flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors"
-              onClick={onClose}
-            >
-              <Mail size={24} strokeWidth={1.5} />
-              <span className="font-medium text-base">Contact Me</span>
-            </Link>
+        
           </nav>
         </div>
         

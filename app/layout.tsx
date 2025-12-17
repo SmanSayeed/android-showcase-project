@@ -10,9 +10,9 @@ const geist = Geist({ subsets: ["latin"] })
 const geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Portfolio | Professional Web Developer",
+  title: "We build powerful Android, iOS apps and mobile games for your business",
   description:
-    "Explore my portfolio of modern web applications built with React, Next.js, and contemporary technologies.",
+    "ApticStudio builds powerful Android, iOS apps and mobile games to help businesses grow faster with modern technology.",
   generator: "v0.app",
   icons: {
     icon: [

@@ -17,7 +17,7 @@ import {
 
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
-  const [siteName, setSiteName] = useState("Aptic Studio")
+  const [siteName, setSiteName] = useState("ApticStudio")
   const [logoUrl, setLogoUrl] = useState("/my-logo.png")
   const pathname = usePathname()
   const supabase = createClient()
@@ -53,7 +53,7 @@ export default function Header() {
           Services <ChevronDown size={14} className="opacity-50" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[300px] p-2">
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-purple-500/10 rounded-md text-purple-500">
                 <Smartphone size={20} />
@@ -64,7 +64,7 @@ export default function Header() {
               </div>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
                 <Code size={20} />
@@ -75,7 +75,7 @@ export default function Header() {
               </div>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-red-500/10 rounded-md text-red-500">
                 <Gamepad2 size={20} />
@@ -86,7 +86,7 @@ export default function Header() {
               </div>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-pink-500/10 rounded-md text-pink-500">
                 <Palette size={20} />
@@ -106,7 +106,7 @@ export default function Header() {
           Projects <ChevronDown size={14} className="opacity-50" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="w-[300px] p-2">
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#projects")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-orange-500/10 rounded-md text-orange-500">
                 <Folder size={20} />
@@ -117,7 +117,7 @@ export default function Header() {
               </div>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem asChild>
+          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
             <Link href={getLink("#projects")} className="flex items-start gap-3 p-3 cursor-pointer">
               <div className="p-2 bg-green-500/10 rounded-md text-green-500">
                 <Star size={20} />
@@ -150,7 +150,7 @@ export default function Header() {
               height={40}
               className="rounded-lg group-hover:scale-110 transition-transform object-cover"
             />
-            <span className="font-bold text-lg hidden sm:inline text-foreground">{siteName}</span>
+            <span className="font-bold text-lg text-foreground">{siteName}</span>
           </Link>
 
           {/* Desktop Navigation */}
