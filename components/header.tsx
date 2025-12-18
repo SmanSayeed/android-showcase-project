@@ -152,6 +152,9 @@ export default function Header() {
       <Link href="/team" className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
         Team
       </Link>
+      <Link href="/about" className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
+        About Us
+      </Link>
     </div>
   )
 
@@ -181,7 +184,7 @@ export default function Header() {
             <ThemeToggle />
             <Link
               href={getLink("#contact")}
-              className="hidden md:inline-flex px-6 py-2 rounded-lg font-semibold bg-linear-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
+              className="hidden md:inline-flex px-6 py-2 rounded-lg bg-linear-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
             >
               Contact Me
             </Link>

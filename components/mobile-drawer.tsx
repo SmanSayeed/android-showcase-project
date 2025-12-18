@@ -12,7 +12,8 @@ import {
   Mail,
   ChevronDown,
   Code,
-  Gamepad2
+  Gamepad2,
+  Info
 } from "lucide-react"
 import {
   Accordion,
@@ -60,7 +61,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       {/* Backdrop */}
       <div 
         className={cn(
-          "fixed inset-0 bg-black/60 z-[90] transition-opacity duration-300 md:hidden",
+          "fixed inset-0 bg-black/60 z-90 transition-opacity duration-300 md:hidden",
           isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         )}
         onClick={onClose}
@@ -70,7 +71,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
       {/* Drawer */}
       <div
         className={cn(
-          "fixed right-0 top-0 h-full w-[85vw] max-w-[320px] bg-background z-[100] transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl border-l border-border",
+          "fixed right-0 top-0 h-full w-[85vw] max-w-[320px] bg-background z-100 transform transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-2xl border-l border-border",
           isOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -182,6 +183,16 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
             >
               <Users size={24} strokeWidth={1.5} />
               <span className="font-medium text-base">Team</span>
+            </Link>
+
+            {/* About Us */}
+            <Link
+              href="/about"
+              className="flex items-center gap-4 px-6 py-4 text-foreground/80 hover:bg-muted/50 hover:text-primary transition-colors"
+              onClick={onClose}
+            >
+              <Info size={24} strokeWidth={1.5} />
+              <span className="font-medium text-base">About Us</span>
             </Link>
 
             {/* Contact Us */}

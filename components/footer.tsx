@@ -104,12 +104,12 @@ export default function Footer() {
         <div className="border-t border-border/20 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-inherit/70 text-sm">&copy; {currentYear} {siteName}. All rights reserved.</p>
           <div className="flex gap-6 text-sm text-inherit/70">
-            <a href="#" className="hover:text-primary transition-colors">
+            <Link href="/privacy" className="hover:text-primary transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="hover:text-primary transition-colors">
-              Terms of Service
-            </a>
+            </Link>
+            <Link href="/terms" className="hover:text-primary transition-colors">
+              Terms and Conditions
+            </Link>
           </div>
         </div>
       </div>
