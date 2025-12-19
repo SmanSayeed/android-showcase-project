@@ -51,11 +51,15 @@ async function getAboutData() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  const settingsRes = await supabase
-    .from("about_page_settings")
+  // 1. Fetch Dynamic Content from 'about_page' table (which we just created)
+  const aboutPageRes = await supabase
+    .from("about_page")
     .select("*")
+    .order('updated_at', { ascending: false })
+    .limit(1)
     .single()
 
+  // 2. Keep fetching stats and products as before (assuming they are still used)
   const statsRes = await supabase
     .from("about_stats")
     .select("*")
@@ -66,52 +70,33 @@ async function getAboutData() {
     .select("*")
     .order("order_index")
 
-  if (settingsRes.error) console.error("❌ Error fetching settings:", settingsRes.error)
-  if (statsRes.error) console.error("❌ Error fetching stats:", statsRes.error)
-  if (productsRes.error) console.error("❌ Error fetching products:", productsRes.error)
+  if (aboutPageRes.error && aboutPageRes.code !== 'PGRST116') console.error("❌ Error fetching about page content:", aboutPageRes.error)
 
   return {
-    settings: settingsRes.data,
+    aboutContent: aboutPageRes.data,
     stats: statsRes.data || [],
     products: productsRes.data || [],
   }
 }
-export default async function AboutPage() {
-  const { settings, stats, products } = await getAboutData()
-  
-  if (settings) {
-    console.log("✅ [About Page] Successfully fetched data from Supabase:", { 
-      badge: settings.hero_badge_text,
-      statsCount: stats.length, 
-      productsCount: products.length 
-    })
-  } else {
-    console.log("⚠️ [About Page] No data returned from Supabase, using fallback content.")
-  }
 
-  // Fallbacks if DB is empty
-  const s = settings || {
-    hero_badge_text: "ApticStudio",
-    hero_title_part1: "Building Apps That",
-    hero_title_highlight: "Solve Real Problems",
-    hero_subtitle: "We are a creative mobile development company creating innovative solutions for real-world challenges — from AI-powered tools to smart business applications.",
-    value_1_title: "Mission Driven",
-    value_1_desc: "Creating technology solutions that address real challenges faced by our communities.",
-    value_2_title: "Innovation First",
-    value_2_desc: "Leveraging cutting-edge AI and mobile technologies to build smart, intuitive applications.",
-    value_3_title: "User Focused",
-    value_3_desc: "Designing experiences that are accessible, easy to use, and truly helpful for everyday users.",
-    value_4_title: "Global Impact",
-    value_4_desc: "Proud to build solutions that serve and empower our local and global communities.",
-    main_content_text_1: "Aptic Studio is a forward-thinking mobile development company dedicated to solving local challenges through innovative technology. We believe in creating apps that make everyday tasks easier and more efficient for our community.",
-    main_content_text_2: "From our flagship AI Scanner that transforms document management to our upcoming platforms, we're committed to building practical solutions that truly matter.",
-  }
+export default async function AboutPage() {
+  const { aboutContent, stats, products } = await getAboutData()
+  
+  // Use DB content or Fallback
+  const heroBadge = "About Us" // You could make this dynamic too if you added a column for it
+  const heroTitle = aboutContent?.title || "Building Apps That Solve Real Problems"
+  const heroDescription = aboutContent?.description || "We are a creative mobile development company creating innovative solutions for real-world challenges."
+  const mainContent = aboutContent?.content || "Aptic Studio is a forward-thinking mobile development company dedicated to solving local challenges through innovative technology."
+
+  // Parse hero title for highlighting (this is a simplified logic to match the existing design roughly)
+  // If the user puts "Building Apps That Solve Real Problems", we can try to split it or just display it fully.
+  // For now, let's keep it simple and safe.
 
   const values = [
-    { title: s.value_1_title, desc: s.value_1_desc, icon: Target, color: "teal" },
-    { title: s.value_2_title, desc: s.value_2_desc, icon: Lightbulb, color: "purple" },
-    { title: s.value_3_title, desc: s.value_3_desc, icon: Users, color: "blue" },
-    { title: s.value_4_title, desc: s.value_4_desc, icon: Globe, color: "primary" },
+    { title: "Mission Driven", desc: "Creating technology solutions that address real challenges faced by our communities.", icon: Target, color: "teal" },
+    { title: "Innovation First", desc: "Leveraging cutting-edge AI and mobile technologies to build smart, intuitive applications.", icon: Lightbulb, color: "purple" },
+    { title: "User Focused", desc: "Designing experiences that are accessible, easy to use, and truly helpful for everyday users.", icon: Users, color: "blue" },
+    { title: "Global Impact", desc: "Proud to build solutions that serve and empower our local and global communities.", icon: Globe, color: "primary" },
   ]
   
   const displayStats = stats.length > 0 ? stats : [
@@ -167,18 +152,15 @@ export default async function AboutPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              {s.hero_badge_text}
+              {heroBadge}
             </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
-              {s.hero_title_part1} <br />
-              <span className="bg-linear-to-r from-primary to-purple-400 bg-clip-text text-transparent">
-                {s.hero_title_highlight}
-              </span>
+              {heroTitle}
             </h1>
             
             <p className="text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
-              {s.hero_subtitle}
+              {heroDescription}
             </p>
             
             <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
@@ -340,14 +322,13 @@ export default async function AboutPage() {
              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
                About Us
              </div>
-             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight" dangerouslySetInnerHTML={{ __html: s.main_content_title || "" }} />
+             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+                {heroTitle}
+             </h2>
              
-             <p className="text-lg text-muted-foreground leading-relaxed">
-               {s.main_content_text_1}
-             </p>
-             <p className="text-muted-foreground leading-relaxed">
-               {s.main_content_text_2}
-             </p>
+             <div className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">
+               {mainContent}
+             </div>
              <div className="flex items-center gap-4">
                 <div className="flex -space-x-3">
                    {[1,2,3].map(i => (
