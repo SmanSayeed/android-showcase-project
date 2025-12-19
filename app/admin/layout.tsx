@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info, Shield } from "lucide-react"
 import AdminHeader from "@/components/admin/header"
 
 import { getMyRole } from "@/app/actions/users"
@@ -58,6 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { icon: Info, label: "About", href: "/admin/about", roles: ["all"] },
         { icon: MessageSquare, label: "Testimonials", href: "/admin/testimonials", roles: ["all"] },
         { icon: FileText, label: "Terms", href: "/admin/terms", roles: ["all"] },
+        { icon: Shield, label: "Privacy Policy", href: "/admin/privacy", roles: ["all"] },
         { icon: Share2, label: "Social Media", href: "/admin/socials", roles: ["all"] },
         { icon: MessageCircle, label: "WhatsApp", href: "/admin/whatsapp", roles: ["all"] },
         { icon: Settings, label: "General Settings", href: "/admin/settings", roles: ["all"] },
