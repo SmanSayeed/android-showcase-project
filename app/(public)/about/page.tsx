@@ -136,7 +136,7 @@ export default async function AboutPage() {
       
       {/* 1. HERO / ABOUT SECTION (Matches Screenshot 2) */}
       <section className="container mx-auto px-4 py-16 md:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           
           {/* Left Side: Text Content */}
           <div className="space-y-8">
@@ -176,7 +176,7 @@ export default async function AboutPage() {
           </div>
 
           {/* Right Side: Values Grid */}
-          <div className="grid sm:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
              {values.map((v, i) => {
                const theme = THEME_MAP[v.color] || THEME_MAP.primary
                // Custom styling for these specific cards to match the dark screenshot
