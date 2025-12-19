@@ -37,12 +37,12 @@ const ICON_MAP: Record<string, LucideIcon> = {
 
 // Color themes mapping
 const THEME_MAP: Record<string, { text: string, bg: string, btn: string, btnHover: string }> = {
-  green: { text: "text-green-500", bg: "bg-green-500/10", btn: "bg-green-600", btnHover: "hover:bg-green-700" },
-  blue: { text: "text-blue-500", bg: "bg-blue-500/10", btn: "bg-blue-600", btnHover: "hover:bg-blue-700" },
-  orange: { text: "text-orange-500", bg: "bg-orange-500/10", btn: "bg-orange-600", btnHover: "hover:bg-orange-700" },
-  purple: { text: "text-purple-500", bg: "bg-purple-500/10", btn: "bg-purple-600", btnHover: "hover:bg-purple-700" },
-  teal: { text: "text-teal-500", bg: "bg-teal-500/10", btn: "bg-teal-600", btnHover: "hover:bg-teal-700" },
-  primary: { text: "text-primary", bg: "bg-primary/10", btn: "bg-primary", btnHover: "hover:bg-primary/90" },
+  green: { text: "text-green-400", bg: "bg-green-500/10", btn: "bg-green-600", btnHover: "hover:bg-green-700" },
+  blue: { text: "text-blue-400", bg: "bg-blue-500/10", btn: "bg-blue-600", btnHover: "hover:bg-blue-700" },
+  orange: { text: "text-orange-400", bg: "bg-orange-500/10", btn: "bg-orange-600", btnHover: "hover:bg-orange-700" },
+  purple: { text: "text-purple-400", bg: "bg-purple-500/10", btn: "bg-purple-600", btnHover: "hover:bg-purple-700" },
+  teal: { text: "text-teal-400", bg: "bg-teal-500/10", btn: "bg-teal-600", btnHover: "hover:bg-teal-700" },
+  primary: { text: "text-purple-400", bg: "bg-purple-500/10", btn: "bg-purple-600", btnHover: "hover:bg-purple-700" },
 }
 
 async function getAboutData() {
@@ -51,7 +51,6 @@ async function getAboutData() {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
 
-  // 1. Fetch Dynamic Content from 'about_page' table (which we just created)
   const aboutPageRes = await supabase
     .from("about_page")
     .select("*")
@@ -59,7 +58,6 @@ async function getAboutData() {
     .limit(1)
     .single()
 
-  // 2. Keep fetching stats and products as before (assuming they are still used)
   const statsRes = await supabase
     .from("about_stats")
     .select("*")
@@ -82,15 +80,13 @@ async function getAboutData() {
 export default async function AboutPage() {
   const { aboutContent, stats, products } = await getAboutData()
   
-  // Use DB content or Fallback
-  const heroBadge = "About Us" // You could make this dynamic too if you added a column for it
-  const heroTitle = aboutContent?.title || "Building Apps That Solve Real Problems"
-  const heroDescription = aboutContent?.description || "We are a creative mobile development company creating innovative solutions for real-world challenges."
-  const mainContent = aboutContent?.content || "Aptic Studio is a forward-thinking mobile development company dedicated to solving local challenges through innovative technology."
-
-  // Parse hero title for highlighting (this is a simplified logic to match the existing design roughly)
-  // If the user puts "Building Apps That Solve Real Problems", we can try to split it or just display it fully.
-  // For now, let's keep it simple and safe.
+  // Dynamic Content variables
+  const heroBadge = "ApticStudio"
+  const heroTitle = aboutContent?.title || "About Aptic Studio"
+  const heroDescription = aboutContent?.content || "Aptic Studio is a forward-thinking mobile development company dedicated to solving local challenges through innovative technology. We believe in creating apps that make everyday tasks easier and more efficient for our community."
+  // Note: Using 'content' for the description based on the screenshot layout.
+  // The Admin panel has 'description' (subtitle) and 'content' (main). 
+  // We'll use them smartly.
 
   const values = [
     { title: "Mission Driven", desc: "Creating technology solutions that address real challenges faced by our communities.", icon: Target, color: "teal" },
@@ -99,12 +95,6 @@ export default async function AboutPage() {
     { title: "Global Impact", desc: "Proud to build solutions that serve and empower our local and global communities.", icon: Globe, color: "primary" },
   ]
   
-  const displayStats = stats.length > 0 ? stats : [
-    { value: "20+", label: "Apps Published" },
-    { value: "AI", label: "Powered Solutions" },
-    { value: "100%", label: "Client Satisfaction" }
-  ]
-
   const displayProducts = products.length > 0 ? products : [
     { 
        title: "Aptic AI Scanner", 
@@ -142,286 +132,141 @@ export default async function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 pt-24 pb-12 md:pt-40 md:pb-24">
-        <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              {heroBadge}
-            </div>
-            
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
-              {heroTitle}
-            </h1>
-            
-            <p className="text-xl text-muted-foreground max-w-lg leading-relaxed mx-auto lg:mx-0">
-              {heroDescription}
-            </p>
-            
-            <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="rounded-full px-8 text-base">
-                Explore Our Apps <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-              <Button variant="outline" size="lg" className="rounded-full px-8 text-base">
-                Learn More
-              </Button>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-8 pt-4 border-t border-border/50">
-              {displayStats.map((stat: any, i: number) => (
-                <div key={i} className="flex gap-8 items-center">
-                  <div>
-                    <div className="text-3xl font-bold text-foreground">{stat.value}</div>
-                    <div className="text-sm text-muted-foreground font-medium">{stat.label}</div>
-                  </div>
-                  {i < displayStats.length - 1 && <div className="hidden sm:block w-px h-10 bg-border/50" />}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="relative mx-auto lg:ml-auto w-full max-w-[280px] sm:max-w-[320px] lg:max-w-[400px] aspect-9/18 animate-in fade-in slide-in-from-right-10 duration-1000 delay-200 mt-8 lg:mt-0">
-            {/* Phone Mockup Representation */}
-            <div className="absolute inset-0 bg-gray-900 rounded-[2.5rem] md:rounded-[3rem] shadow-2xl border-4 md:border-8 border-gray-800 overflow-hidden">
-               {/* Phone Screen Content */}
-               <div className="h-full w-full bg-background relative flex flex-col">
-                  {/* Status Bar Mock */}
-                   <div className="h-6 bg-black/5 w-full flex justify-between px-6 items-center text-[10px] font-bold opacity-50">
-                      <span>9:41</span>
-                      <div className="flex gap-1">
-                        <div className="w-3 h-3 rounded-full bg-current"></div>
-                        <div className="w-3 h-3 rounded-full bg-current"></div>
-                      </div>
-                   </div>
-                   
-                   {/* App UI Mock */}
-                   <div className="flex-1 p-6 space-y-6 bg-linear-to-b from-primary/5 to-background">
-                      <div className="flex justify-between items-center">
-                         <div className="w-8 h-8 rounded-full bg-primary/20"></div>
-                         <div className="w-8 h-8 rounded-full bg-primary/20"></div>
-                      </div>
-                      
-                      <div className="space-y-2">
-                         <div className="h-8 w-3/4 bg-foreground/10 rounded-lg"></div>
-                         <div className="h-4 w-1/2 bg-foreground/10 rounded-lg"></div>
-                      </div>
-
-                      <div className="aspect-square w-full bg-white dark:bg-black/20 rounded-2xl shadow-lg flex items-center justify-center relative overflow-hidden group">
-                         <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
-                         <ScanLine className="w-16 h-16 text-primary animate-pulse" />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                         <div className="h-24 rounded-2xl bg-white dark:bg-black/20 shadow-xs"></div>
-                         <div className="h-24 rounded-2xl bg-white dark:bg-black/20 shadow-xs"></div>
-                      </div>
-                   </div>
-
-                   {/* Floating Label */}
-                   <div className="hidden md:flex absolute bottom-24 -left-12 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-xl items-center gap-4 animate-bounce duration-3000">
-                      <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
-                         <Smartphone size={20} />
-                      </div>
-                      <div>
-                         <div className="font-bold text-sm">Mobile First</div>
-                         <div className="text-xs text-muted-foreground">Android & iOS Apps</div>
-                      </div>
-                   </div>
-                   
-                   <div className="hidden md:flex absolute top-32 -right-12 bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-xl items-center gap-4 animate-pulse">
-                      <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
-                         <MapPin size={20} />
-                      </div>
-                      <div>
-                         <div className="font-bold text-sm">Local Focus</div>
-                         <div className="text-xs text-muted-foreground">Global Standards</div>
-                      </div>
-                   </div>
-               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Products Section */}
-      {/* Products Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-              <Code2 size={16} /> Our Products
-            </div>
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Apps That Make a <span className="text-primary">Difference</span>
-            </h2>
-            <p className="text-muted-foreground">
-              Innovative mobile applications designed to solve everyday challenges. Experience the power of technology in your hands.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-            {displayProducts.map((p: any, idx: number) => {
-              const theme = THEME_MAP[p.color_theme] || THEME_MAP.blue
-              const Icon = ICON_MAP[p.icon_name] || Code2
-              
-              return (
-                <div key={idx} className={`bg-background rounded-3xl p-6 md:p-8 border border-border shadow-xs hover:shadow-xl transition-all duration-300 ${p.is_coming_soon ? 'opacity-80 hover:opacity-100' : 'hover:-translate-y-1'} group relative overflow-hidden`}>
-                  {p.is_featured && (
-                    <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full">
-                       Featured
-                    </div>
-                  )}
-                  {p.is_coming_soon && (
-                    <div className="w-fit px-3 py-1 bg-muted rounded-full text-[10px] font-bold uppercase tracking-wider mb-4">Coming Soon</div>
-                  )}
-                  
-                  <div className={`w-16 h-16 rounded-2xl ${theme.bg} ${theme.text} flex items-center justify-center mb-6 group-hover:bg-current group-hover:text-white transition-colors`}>
-                     <Icon size={32} />
-                  </div>
-                  
-                  <h3 className="text-xl font-bold mb-2">{p.title}</h3>
-                  <p className={`text-sm ${theme.text} font-medium mb-4`}>{p.category}</p>
-                  <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-                     {p.description}
-                  </p>
-                  
-                  {p.features && (
-                    <div className="space-y-2 mb-8">
-                       {p.features.map((f: string, i: number) => (
-                         <div key={i} className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <CheckCircle2 size={14} className={theme.text.split(' ')[0]} /> {f}
-                         </div>
-                       ))}
-                    </div>
-                  )}
-                  
-                  <Button 
-                    className={`w-full rounded-xl ${p.is_coming_soon ? '' : `${theme.btn} ${theme.btnHover} text-white group-hover:shadow-lg transition-all`}`}
-                    disabled={p.is_coming_soon}
-                    variant={p.is_coming_soon ? "outline" : "default"}
-                  >
-                     {p.primary_button_text}
-                  </Button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* About Section */}
-      {/* About Section */}
-      <section className="py-16 md:py-24 container mx-auto px-4">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 items-center">
-          <div className="lg:w-1/2 space-y-8">
-             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
-               About Us
+    <div className="min-h-screen bg-[#030014] text-gray-200 selection:bg-purple-500/30">
+      
+      {/* 1. HERO / ABOUT SECTION (Matches Screenshot 2) */}
+      <section className="container mx-auto px-4 py-16 md:py-32">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+          
+          {/* Left Side: Text Content */}
+          <div className="space-y-8">
+             {/* Badge */}
+             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium">
+               <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+               </span>
+               {heroBadge}
              </div>
-             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
-                {heroTitle}
-             </h2>
-             
-             <div className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">
-               {mainContent}
+
+             {/* Title */}
+             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
+               {heroTitle}
+             </h1>
+
+             {/* Description */}
+             <div className="text-lg text-gray-400 leading-relaxed max-w-xl">
+               {heroDescription}
              </div>
-             <div className="flex items-center gap-4">
-                <div className="flex -space-x-3">
+
+             {/* Team Avatar Group */}
+             <div className="flex items-center gap-4 pt-4">
+                <div className="flex -space-x-4">
                    {[1,2,3].map(i => (
-                     <div key={i} className="w-10 h-10 rounded-full bg-gray-200 border-2 border-background flex items-center justify-center font-bold text-xs text-gray-500">
+                     <div key={i} className="w-12 h-12 rounded-full bg-linear-to-b from-gray-700 to-gray-800 border-2 border-[#030014] flex items-center justify-center font-bold text-xs text-gray-400 shadow-xl">
                         U{i}
                      </div>
                    ))}
                 </div>
-                <div className="text-sm font-medium">
-                   <div className="text-foreground">The Aptic Team</div>
-                   <div className="text-muted-foreground">Building the future</div>
+                <div className="text-sm">
+                   <div className="text-white font-semibold">The Aptic Team</div>
+                   <div className="text-gray-500">Building the future</div>
                 </div>
              </div>
           </div>
 
-          <div className="lg:w-1/2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Right Side: Values Grid */}
+          <div className="grid sm:grid-cols-2 gap-5">
              {values.map((v, i) => {
                const theme = THEME_MAP[v.color] || THEME_MAP.primary
+               // Custom styling for these specific cards to match the dark screenshot
                return (
-                 <div key={i} className="bg-card p-6 rounded-2xl border border-border shadow-xs hover:shadow-md transition-shadow">
-                    <div className={`w-12 h-12 rounded-xl ${theme.bg} ${theme.text} flex items-center justify-center mb-4`}>
-                       <v.icon size={24} />
+                 <div key={i} className="bg-[#100C24] p-6 rounded-2xl border border-white/5 hover:border-purple-500/20 transition-colors group">
+                    <div className={`w-10 h-10 rounded-lg ${theme.bg} ${theme.text} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                       <v.icon size={20} />
                     </div>
-                    <h3 className="font-bold text-lg mb-2">{v.title}</h3>
-                    <p className="text-sm text-muted-foreground">{v.desc}</p>
+                    <h3 className="font-bold text-white text-lg mb-2">{v.title}</h3>
+                    <p className="text-sm text-gray-400 leading-relaxed">{v.desc}</p>
                  </div>
                )
              })}
           </div>
+
         </div>
       </section>
 
-      {/* Contact CTA Section */}
-      <section className="py-16 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12 md:mb-16">
-             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-                <Mail size={16} /> Get In Touch
+
+
+
+
+      {/* 3. CONTACT CTA SECTION (Matches Screenshot 3) */}
+      <section className="py-24 container mx-auto px-4">
+          <div className="text-center mb-16 space-y-4">
+             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 text-purple-400 text-xs font-bold uppercase tracking-wider">
+                <Mail size={14} /> Get In Touch
              </div>
-             <h2 className="text-3xl md:text-4xl font-bold mb-4">Let's Build Something <span className="text-primary">Together</span></h2>
-             <p className="text-muted-foreground">Have a project idea or want to collaborate? We'd love to hear from you.</p>
+             <h2 className="text-3xl md:text-5xl font-bold text-white">Let's Build Something <span className="text-purple-500">Together</span></h2>
+             <p className="text-gray-400 max-w-lg mx-auto">Have a project idea or want to collaborate? We'd love to hear from you.</p>
           </div>
 
-          <div className="bg-background rounded-[2.5rem] p-6 md:p-12 border border-border shadow-xl max-w-5xl mx-auto flex flex-col md:flex-row gap-8 lg:gap-12 items-center">
-             <div className="flex-1 space-y-8 w-full">
-                <h3 className="text-2xl font-bold">Contact Information</h3>
+          <div className="bg-[#0B081F] rounded-[2.5rem] p-8 md:p-12 border border-white/5 max-w-5xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+             {/* Left: Info */}
+             <div className="flex-1 space-y-10 w-full">
+                <h3 className="text-2xl font-bold text-white">Contact Information</h3>
                 
-                <div className="flex items-start gap-4">
-                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                      <Mail size={24} />
-                   </div>
-                   <div>
-                      <div className="font-semibold mb-1">Email</div>
-                      <a href="mailto:hello@apticstudio.com" className="text-muted-foreground hover:text-primary transition-colors">hello@apticstudio.com</a>
-                   </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                      <MapPin size={24} />
-                   </div>
-                   <div>
-                      <div className="font-semibold mb-1">Location</div>
-                      <div className="text-muted-foreground">New York, USA</div>
-                   </div>
-                </div>
+                <div className="space-y-8">
+                    <div className="flex items-start gap-5">
+                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                          <Mail size={22} />
+                       </div>
+                       <div>
+                          <div className="font-bold text-white mb-1">Email</div>
+                          <a href="mailto:hello@apticstudio.com" className="text-gray-400 hover:text-purple-400 transition-colors">hello@apticstudio.com</a>
+                       </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-5">
+                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                          <MapPin size={22} />
+                       </div>
+                       <div>
+                          <div className="font-bold text-white mb-1">Location</div>
+                          <div className="text-gray-400">New York, USA</div>
+                       </div>
+                    </div>
 
-                <div className="flex items-start gap-4">
-                   <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                      <Download size={24} />
-                   </div>
-                   <div>
-                      <div className="font-semibold mb-1">Play Store</div>
-                      <a href="#" className="text-muted-foreground hover:text-primary transition-colors">View Our Apps</a>
-                   </div>
+                    <div className="flex items-start gap-5">
+                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                          <Download size={22} />
+                       </div>
+                       <div>
+                          <div className="font-bold text-white mb-1">Play Store</div>
+                          <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors">View Our Apps</a>
+                       </div>
+                    </div>
                 </div>
              </div>
 
-             <div className="flex-1 w-full bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 rounded-3xl p-8 md:p-12 text-center flex flex-col items-center justify-center gap-6 border border-border/50">
-                <div className="w-24 h-24 bg-primary text-primary-foreground rounded-3xl flex items-center justify-center text-2xl font-bold shadow-lg shadow-primary/30">
+             {/* Right: Card */}
+             <div className="flex-1 w-full bg-[#110D26] rounded-3xl p-10 text-center flex flex-col items-center justify-center gap-6 border border-white/5 shadow-2xl relative overflow-hidden group">
+                <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                
+                <div className="w-28 h-28 bg-[#7C3AED] text-white rounded-[2rem] flex items-center justify-center text-3xl font-bold shadow-2xl shadow-purple-600/20 mb-2">
                    AS
                 </div>
+                
                 <div>
-                   <h3 className="text-2xl font-bold tracking-tight">APTIC STUDIO</h3>
-                   <p className="text-sm text-muted-foreground">Innovative Software Solutions</p>
+                   <h3 className="text-xl font-bold text-white tracking-wide uppercase">APTIC STUDIO</h3>
+                   <p className="text-sm text-gray-500 mt-1">Innovative Software Solutions</p>
                 </div>
-                <Button className="w-full max-w-xs rounded-xl" size="lg">
+                
+                <Button className="w-full max-w-xs rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold h-12 shadow-lg shadow-purple-600/20" size="lg">
                    Visit Play Store
                 </Button>
              </div>
           </div>
-        </div>
       </section>
+
     </div>
   )
 }
