@@ -23,8 +23,8 @@ export default async function TeamPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground">Our Team</h1>
+        <div className="text-center mb-10 md:mb-16 space-y-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-foreground">Our Team</h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Meet the talented individuals driving our success and innovation.
           </p>
@@ -32,42 +32,40 @@ export default async function TeamPage() {
 
         {/* Grid */}
         {members.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {members.map((member) => (
-              <div key={member.id} className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300">
-                {/* Image Aspect Ratio Container */}
-                <div className="aspect-[4/5] relative bg-muted overflow-hidden">
+              <div key={member.id} className="group flex items-center gap-6 p-4 rounded-2xl transition-all duration-300 hover:bg-white/5 border border-transparent hover:border-white/10">
+                {/* Image Container - Left Side, Smaller, Transparent Background */}
+                <div className="relative w-24 h-24 shrink-0 overflow-visible">
                   {member.image_url ? (
                     <Image
                       src={member.image_url}
                       alt={member.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-contain drop-shadow-xl transition-transform duration-300 group-hover:scale-110"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-secondary/30 text-muted-foreground">
+                    <div className="w-full h-full flex items-center justify-center bg-secondary/10 text-muted-foreground rounded-full">
                       No Image
                     </div>
                   )}
-
-                  {/* Overlay Socials (Visible on Hover or always on mobile? Let's do hover for desktop, always for touch? Simplest is bottom bar) */}
                 </div>
 
-                <div className="p-6">
-                  <h3 className="font-bold text-xl text-foreground mb-1">{member.name}</h3>
-                  <p className="text-primary font-medium mb-3 text-sm">{member.role}</p>
-                  <p className="text-muted-foreground text-sm line-clamp-3 mb-4 h-[60px]">{member.bio}</p>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-2xl text-foreground mb-1">{member.name}</h3>
+                  <p className="text-primary font-medium mb-3 uppercase tracking-wide text-xs">{member.role}</p>
+                  <p className="text-muted-foreground text-sm line-clamp-2 mb-3 leading-relaxed">{member.bio}</p>
 
                   {/* Socials */}
                   {member.social_links && member.social_links.length > 0 && (
-                    <div className="flex gap-3 mt-auto">
+                    <div className="flex gap-4">
                       {member.social_links.map((link, i) => (
                         <a
                           key={i}
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-primary transition-colors"
+                          className="text-muted-foreground hover:text-primary transition-colors hover:scale-110 transform"
                         >
                           {socialIcon(link.platform)}
                         </a>

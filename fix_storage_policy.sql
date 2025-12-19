@@ -14,3 +14,10 @@
 
     create policy "Allow Public Delete" on storage.objects
     for delete using ( bucket_id = 'images' );
+
+    -- Ensure the 'images' bucket exists and is public
+    insert into storage.buckets (id, name, public)
+    values ('images', 'images', true)
+    on conflict (id) do update set public = true;
+
+    NOTIFY pgrst, 'reload schema';

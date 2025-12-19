@@ -49,3 +49,6 @@ CREATE TRIGGER update_team_members_updated_at
     BEFORE UPDATE ON public.team_members
     FOR EACH ROW
     EXECUTE PROCEDURE update_updated_at_column();
+
+-- Force schema cache reload
+NOTIFY pgrst, 'reload schema';
