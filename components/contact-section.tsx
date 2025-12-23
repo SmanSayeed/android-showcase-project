@@ -3,7 +3,7 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Mail, Phone, MapPin, Send, Loader2, Monitor, Smartphone, Palette, HelpCircle } from "lucide-react"
+import { Mail, Phone, MapPin, Send, Loader2, Monitor, Smartphone, Palette, HelpCircle, Gamepad2, Layout, Code, Box, Layers } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { toast } from "sonner"
 import {
@@ -14,6 +14,17 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+const ICON_MAP: Record<string, any> = {
+  Smartphone,
+  Gamepad2,
+  Layout,
+  Code,
+  Monitor,
+  Box,
+  Layers,
+  Palette
+}
+
 export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
@@ -23,6 +34,7 @@ export default function ContactSection() {
     message: "",
   })
   const [loading, setLoading] = useState(false)
+  const [services, setServices] = useState<any[]>([])
   const [contactSettings, setContactSettings] = useState({
     email: "hello@portfolio.com",
     whatsapp: "",
@@ -37,6 +49,15 @@ export default function ContactSection() {
           email: data.contact_email || "hello@portfolio.com",
           whatsapp: data.whatsapp_number || "",
         })
+      }
+
+      const { data: servicesData } = await supabase
+        .from("services")
+        .select("*")
+        .order("order_index")
+      
+      if (servicesData) {
+        setServices(servicesData)
       }
     }
     fetchSettings()
@@ -161,122 +182,53 @@ export default function ContactSection() {
                 onValueChange={(value) => setFormData((prev) => ({ ...prev, projectType: value }))}
                 disabled={loading}
               >
-                <SelectTrigger className="h-auto py-3 px-4 rounded-lg bg-white dark:bg-secondary border border-border text-foreground focus:ring-1 focus:ring-primary focus:border-primary transition-all shadow-sm">
-                  <SelectValue placeholder="Select Project Type" />
+                <SelectTrigger className="w-full px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors text-left h-auto">
+                    <span className={!formData.projectType ? "text-muted-foreground" : ""}>
+                      {formData.projectType 
+                        ? (services.find(s => s.id === formData.projectType)?.title || (formData.projectType === 'other' ? "Other" : formData.projectType))
+                        : "Select Project Type"
+                      }
+                    </span>
                 </SelectTrigger>
                 <SelectContent
-                sideOffset={8}
-  className="
-    w-[calc(100vw-2rem)] sm:w-(--radix-select-trigger-width)
-    max-h-[60vh]
-    overflow-y-auto
-    p-1.5
-    mt-2
+                  sideOffset={8}
+                  className="
+                    w-[calc(100vw-2rem)] sm:w-(--radix-select-trigger-width)
+                    max-h-[60vh]
+                    overflow-y-auto
+                    p-1.5
+                    mt-2
+                    rounded-xl
+                    border border-border/50
+                    bg-background/95
+                    dark:bg-background/95
+                    text-foreground
+                    shadow-xl
+                    backdrop-blur-md
+                  "
+                >
+                  {services.map((service) => {
+                    const Icon = ICON_MAP[service.icon_name] || Smartphone
+                    return (
+                        <SelectItem 
+                            key={service.id} 
+                            value={service.id}
+                            className="curso-pointer rounded-lg px-3 py-2.5 mb-1 transition-all hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
+                        >
+                            <div className="flex items-start gap-3 py-1">
+                                <div className={`p-2 rounded-md ${service.color_theme?.includes('blue') ? 'bg-blue-500/10 text-blue-500' : service.color_theme?.includes('purple') ? 'bg-purple-500/10 text-purple-500' : 'bg-primary/10 text-primary'} mt-0.5`}>
+                                    <Icon size={18} />
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-semibold text-foreground">{service.title}</div>
+                                    <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
+                                </div>
+                            </div>
+                        </SelectItem>
+                    )
+                  })}
 
-    rounded-xl
-    border border-border/50
-    bg-background/95
-    dark:bg-background/95
-    text-foreground
-
-    shadow-xl
-    backdrop-blur-md
-  ">
-                  <SelectItem value="web-development"
-  className="
-    cursor-pointer
-  rounded-lg
-  px-3 py-2.5
-  mb-1
-  transition-all
-
-  hover:bg-accent
-  focus:bg-accent
-  focus:text-accent-foreground
-
-  data-[state=checked]:bg-primary/10
-  data-[state=checked]:text-primary
-  data-[state=checked]:border-primary/20
-  data-[state=checked]:shadow-none
-  ">
-                    <div className="flex items-start gap-3 py-1">
-                      <div className="p-2 bg-blue-500/10 rounded-md text-blue-500 mt-0.5">
-                        <Monitor size={18} />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-foreground">Web Development</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">High-performance React & Next.js apps</p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="app-development"
-  className="
-    cursor-pointer
-  rounded-lg
-  px-3 py-2.5
-  mb-1
-  transition-all
-
-  hover:bg-accent
-  focus:bg-accent
-  focus:text-accent-foreground
-
-  data-[state=checked]:bg-primary/10
-  data-[state=checked]:text-primary
-  data-[state=checked]:border-primary/20
-  data-[state=checked]:shadow-none">
-                    <div className="flex items-start gap-3 py-1">
-                      <div className="p-2 bg-purple-500/10 rounded-md text-purple-500 mt-0.5">
-                        <Smartphone size={18} />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-foreground">App Development</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">iOS & Android solutions</p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="ui-ux-design"
-  className="
-    cursor-pointer
-  rounded-lg
-  px-3 py-2.5
-  mb-1
-  transition-all
-
-  hover:bg-accent
-  focus:bg-accent
-  focus:text-accent-foreground
-
-  data-[state=checked]:bg-primary/10
-  data-[state=checked]:text-primary
-  data-[state=checked]:border-primary/20
-  data-[state=checked]:shadow-none">
-                    <div className="flex items-start gap-3 py-1">
-                      <div className="p-2 bg-orange-500/10 rounded-md text-orange-500 mt-0.5">
-                        <Palette size={18} />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-foreground">UI/UX Design</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">Beautiful user interfaces</p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="other"
-  className="
-    cursor-pointer
-  rounded-lg
-  px-3 py-2.5
-  mb-1
-  transition-all
-
-  hover:bg-accent
-  focus:bg-accent
-  focus:text-accent-foreground
-
-  data-[state=checked]:bg-primary/10
-  data-[state=checked]:text-primary
-  data-[state=checked]:border-primary/20
-  data-[state=checked]:shadow-none">
+                  <SelectItem value="other" className="cursor-pointer rounded-lg px-3 py-2.5 mb-1 transition-all hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary">
                     <div className="flex items-start gap-3 py-1">
                       <div className="p-2 bg-gray-500/10 rounded-md text-gray-500 mt-0.5">
                         <HelpCircle size={18} />

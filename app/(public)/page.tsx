@@ -12,9 +12,8 @@ export default function Home() {
       <ServicesSection />
       <WhyChooseUs />
       <ProjectsGrid 
-        limit={4} 
+        limit={3} 
         viewAllHref="/projects" 
-        gridClassName="lg:grid-cols-2"
       />
 
       <TestimonialsSection />

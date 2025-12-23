@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Menu, ChevronDown, Smartphone, Palette, Code, Folder, Layers, Star, Gamepad2 } from "lucide-react"
+import { Menu, ChevronDown, Smartphone, Palette, Code, Folder, Layers, Star, Gamepad2, Layout, Monitor, Box } from "lucide-react"
 import MobileDrawer from "./mobile-drawer"
 import Image from "next/image"
 import ThemeToggle from "./theme-toggle"
@@ -15,10 +15,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+const ICON_MAP: Record<string, any> = {
+  Smartphone,
+  Gamepad2,
+  Layout,
+  Code,
+  Monitor,
+  Box,
+  Layers,
+  Palette
+}
+
 export default function Header() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [siteName, setSiteName] = useState("ApticStudio")
   const [logoUrl, setLogoUrl] = useState("/my-logo.png")
+  const [servicesList, setServicesList] = useState<any[]>([])
   const pathname = usePathname()
   const supabase = createClient()
 
@@ -28,6 +40,15 @@ export default function Header() {
       if (data) {
         if (data.site_name) setSiteName(data.site_name)
         if (data.logo_url) setLogoUrl(data.logo_url)
+      }
+
+      const { data: services } = await supabase
+        .from("services")
+        .select("*")
+        .order("order_index")
+      
+      if (services) {
+        setServicesList(services)
       }
     }
     fetchSettings()
@@ -48,66 +69,47 @@ export default function Header() {
       </Link>
 
       {/* Services Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
-          Services <ChevronDown size={14} className="opacity-50" />
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-  align="start"
-  className="
-    w-[300px] p-2
-    bg-white dark:bg-gray-900
-    border border-gray-200 dark:border-gray-700
-    shadow-xl
-    rounded-xl
-  "
->
-          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
-            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
-              <div className="p-2 bg-purple-500/10 rounded-md text-purple-500">
-                <Smartphone size={20} />
-              </div>
-              <div>
-                <div className="font-semibold text-foreground">App Development</div>
-                <p className="text-xs text-muted-foreground mt-0.5">Cross-platform & Android</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
-            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
-              <div className="p-2 bg-blue-500/10 rounded-md text-blue-500">
-                <Code size={20} />
-              </div>
-              <div>
-                <div className="font-semibold text-foreground">iOS App Development</div>
-                <p className="text-xs text-muted-foreground mt-0.5">Native iOS solutions</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
-            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
-              <div className="p-2 bg-red-500/10 rounded-md text-red-500">
-                <Gamepad2 size={20} />
-              </div>
-              <div>
-                <div className="font-semibold text-foreground">Mobile Game Development</div>
-                <p className="text-xs text-muted-foreground mt-0.5">2D & 3D Game Experiences</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
-            <Link href={getLink("#services")} className="flex items-start gap-3 p-3 cursor-pointer">
-              <div className="p-2 bg-pink-500/10 rounded-md text-pink-500">
-                <Palette size={20} />
-              </div>
-              <div>
-                <div className="font-semibold text-foreground">UI/UX Design</div>
-                <p className="text-xs text-muted-foreground mt-0.5">Beautiful user interfaces</p>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex items-center gap-0.5">
+          <Link href="/services" className="px-3 py-2 rounded-l-lg text-foreground hover:bg-muted transition-colors font-medium">
+             Services
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="px-1.5 py-2 rounded-r-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none flex items-center">
+              <ChevronDown size={14} className="opacity-50" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent
+              align="start"
+              className="
+                w-[300px] p-2
+                bg-white dark:bg-gray-900
+                border border-gray-200 dark:border-gray-700
+                shadow-xl
+                rounded-xl
+              "
+            >
+              {servicesList?.length > 0 ? (
+                (servicesList || []).map((service) => {
+                  const Icon = ICON_MAP[service.icon_name] || Smartphone
+                  return (
+                    <DropdownMenuItem key={service.id} asChild className="focus:bg-gray-100 dark:focus:bg-gray-800 focus:text-foreground">
+                      <Link href={`/services/${service.id}`} className="flex items-start gap-3 p-3 cursor-pointer">
+                        <div className={`p-2 rounded-md ${service.color_theme.includes('blue') ? 'bg-blue-500/10 text-blue-500' : service.color_theme.includes('purple') ? 'bg-purple-500/10 text-purple-500' : 'bg-primary/10 text-primary'}`}>
+                          <Icon size={20} />
+                        </div>
+                        <div>
+                          <div className="font-semibold text-foreground">{service.title}</div>
+                          <p className="text-xs text-muted-foreground mt-0.5 line-clamp-1">{service.description}</p>
+                        </div>
+                      </Link>
+                    </DropdownMenuItem>
+                  )
+                })
+              ) : (
+                <div className="p-4 text-center text-muted-foreground text-sm">Loading services...</div>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+      </div>
 
       {/* Projects Dropdown */}
       <DropdownMenu>
@@ -161,7 +163,7 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 z-50 glass-effect border-b border-border backdrop-blur-lg bg-background/80">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
             <Image
@@ -186,7 +188,7 @@ export default function Header() {
               href={getLink("#contact")}
               className="hidden md:inline-flex px-6 py-2 rounded-lg bg-linear-to-r from-[#c084fc] to-[#ec4899] text-white hover:shadow-lg hover:shadow-[#ec4899]/50 transition-all font-medium"
             >
-              Contact Me
+              Contact Us
             </Link>
             <button
               aria-label="Toggle mobile menu"

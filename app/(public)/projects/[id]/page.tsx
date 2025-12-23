@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { ChevronLeft, Check, ExternalLink } from "lucide-react"
 import { createClient } from "@/lib/supabase"
+import ProjectsGrid from "@/components/projects-grid"
 
 export default async function ProjectPage({
   params,
@@ -100,6 +101,16 @@ export default async function ProjectPage({
               <div className="prose prose-neutral dark:prose-invert max-w-none bg-card p-6 rounded-xl border border-border" dangerouslySetInnerHTML={{ __html: project.full_description }} />
             )}
           </div>
+        </div>
+
+        {/* More Projects Section */}
+        <div className="border-t border-border pt-16">
+          <ProjectsGrid 
+            limit={3} 
+            gridClassName="grid-cols-1 md:grid-cols-3" 
+            showTitle={true} 
+            className="py-0"
+          />
         </div>
       </div>
     </div>

@@ -68,17 +68,23 @@ async function getAboutData() {
     .select("*")
     .order("order_index")
 
+  const settingsRes = await supabase
+    .from("site_settings")
+    .select("*")
+    .single()
+
   if (aboutPageRes.error && aboutPageRes.code !== 'PGRST116') console.error("❌ Error fetching about page content:", aboutPageRes.error)
 
   return {
     aboutContent: aboutPageRes.data,
     stats: statsRes.data || [],
     products: productsRes.data || [],
+    siteSettings: settingsRes.data,
   }
 }
 
 export default async function AboutPage() {
-  const { aboutContent, stats, products } = await getAboutData()
+  const { aboutContent, stats, products, siteSettings } = await getAboutData()
   
   // Dynamic Content variables
   const heroBadge = "ApticStudio"
@@ -103,6 +109,7 @@ export default async function AboutPage() {
        icon_name: "ScanLine",
        color_theme: "green",
        primary_button_text: "Get on Play Store",
+       primary_button_link: siteSettings?.play_store_url || "#",
        is_featured: true,
        is_coming_soon: false,
        features: ["Smart OCR Recognition", "PDF Export & Sharing"]
@@ -159,20 +166,7 @@ export default async function AboutPage() {
                {heroDescription}
              </div>
 
-             {/* Team Avatar Group */}
-             <div className="flex items-center gap-4 pt-4">
-                <div className="flex -space-x-4">
-                   {[1,2,3].map(i => (
-                     <div key={i} className="w-12 h-12 rounded-full bg-linear-to-b from-gray-700 to-gray-800 border-2 border-[#030014] flex items-center justify-center font-bold text-xs text-gray-400 shadow-xl">
-                        U{i}
-                     </div>
-                   ))}
-                </div>
-                <div className="text-sm">
-                   <div className="text-white font-semibold">The Aptic Team</div>
-                   <div className="text-gray-500">Building the future</div>
-                </div>
-             </div>
+
           </div>
 
           {/* Right Side: Values Grid */}
@@ -214,38 +208,40 @@ export default async function AboutPage() {
              <div className="flex-1 space-y-10 w-full">
                 <h3 className="text-2xl font-bold text-white">Contact Information</h3>
                 
-                <div className="space-y-8">
-                    <div className="flex items-start gap-5">
-                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
-                          <Mail size={22} />
-                       </div>
-                       <div>
-                          <div className="font-bold text-white mb-1">Email</div>
-                          <a href="mailto:hello@apticstudio.com" className="text-gray-400 hover:text-purple-400 transition-colors">hello@apticstudio.com</a>
-                       </div>
-                    </div>
-                    
-                    <div className="flex items-start gap-5">
-                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
-                          <MapPin size={22} />
-                       </div>
-                       <div>
-                          <div className="font-bold text-white mb-1">Location</div>
-                          <div className="text-gray-400">New York, USA</div>
-                       </div>
-                    </div>
+                     <div className="space-y-8">
+                     <div className="flex items-start gap-5">
+                        <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                           <Mail size={22} />
+                        </div>
+                        <div>
+                           <div className="font-bold text-white mb-1">Email</div>
+                           <a href={`mailto:${siteSettings?.contact_email || 'hello@apticstudio.com'}`} className="text-gray-400 hover:text-purple-400 transition-colors">
+                              {siteSettings?.contact_email || 'hello@apticstudio.com'}
+                           </a>
+                        </div>
+                     </div>
+                     
+                     <div className="flex items-start gap-5">
+                        <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                           <MapPin size={22} />
+                        </div>
+                        <div>
+                           <div className="font-bold text-white mb-1">Location</div>
+                           <div className="text-gray-400">{siteSettings?.address || 'New York, USA'}</div>
+                        </div>
+                     </div>
 
-                    <div className="flex items-start gap-5">
-                       <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
-                          <Download size={22} />
-                       </div>
-                       <div>
-                          <div className="font-bold text-white mb-1">Play Store</div>
-                          <a href="#" className="text-gray-400 hover:text-purple-400 transition-colors">View Our Apps</a>
-                       </div>
-                    </div>
-                </div>
-             </div>
+                     <div className="flex items-start gap-5">
+                        <div className="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center shrink-0">
+                           <Download size={22} />
+                        </div>
+                        <div>
+                           <div className="font-bold text-white mb-1">Play Store</div>
+                           <a href={siteSettings?.play_store_url || "#"} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-purple-400 transition-colors">View Our Apps</a>
+                        </div>
+                     </div>
+                 </div>
+              </div>
 
              {/* Right: Card */}
              <div className="flex-1 w-full bg-[#110D26] rounded-3xl p-10 text-center flex flex-col items-center justify-center gap-6 border border-white/5 shadow-2xl relative overflow-hidden group">
@@ -260,9 +256,11 @@ export default async function AboutPage() {
                    <p className="text-sm text-gray-500 mt-1">Innovative Software Solutions</p>
                 </div>
                 
-                <Button className="w-full max-w-xs rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold h-12 shadow-lg shadow-purple-600/20" size="lg">
-                   Visit Play Store
-                </Button>
+                <a href={siteSettings?.play_store_url || "#"} target="_blank" rel="noopener noreferrer" className="w-full max-w-xs block">
+                    <Button className="w-full rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white font-semibold h-12 shadow-lg shadow-purple-600/20" size="lg">
+                       Visit Play Store
+                    </Button>
+                </a>
              </div>
           </div>
       </section>

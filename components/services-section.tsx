@@ -1,11 +1,41 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Smartphone, Gamepad2, Layout, Code, Monitor, Box, Layers } from "lucide-react"
 import Link from "next/link"
-import { services } from "@/lib/data"
+import { createClient } from "@/lib/supabase"
+
+const ICON_MAP: Record<string, any> = {
+  Smartphone,
+  Gamepad2,
+  Layout,
+  Code,
+  Monitor,
+  Box,
+  Layers,
+}
 
 export default function ServicesSection() {
+  const [services, setServices] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+
+  useEffect(() => {
+    async function fetchServices() {
+      const { data } = await supabase
+        .from("services")
+        .select("*")
+        .order("order_index")
+      
+      if (data) {
+        setServices(data)
+      }
+      setLoading(false)
+    }
+    fetchServices()
+  }, [])
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -21,6 +51,10 @@ export default function ServicesSection() {
       y: 0,
       transition: { duration: 0.6, ease: "easeOut" },
     },
+  }
+
+  if (loading) {
+    return <section id="services" className="py-20 bg-background min-h-[500px]" />
   }
 
   return (
@@ -49,7 +83,7 @@ export default function ServicesSection() {
           viewport={{ once: true }}
         >
           {services.map((service) => {
-            const Icon = service.icon
+            const Icon = ICON_MAP[service.icon_name] || Smartphone
             return (
               <motion.div key={service.id} variants={itemVariants}>
                 <Link href={`/services/${service.id}`}>
@@ -57,7 +91,7 @@ export default function ServicesSection() {
                     <div className="bg-card border border-border rounded-xl p-8 hover:border-primary transition-all duration-300 h-full hover:bg-muted hover:shadow-lg hover:shadow-primary/20">
                       {/* Icon Container */}
                       <div
-                        className={`w-16 h-16 rounded-xl bg-linear-to-br ${service.color} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                        className={`w-16 h-16 rounded-xl bg-linear-to-br ${service.color_theme} flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
                       >
                         <Icon className="w-8 h-8 text-white" />
                       </div>

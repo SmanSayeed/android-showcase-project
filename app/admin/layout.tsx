@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info, Shield } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info, Shield, Smartphone, Layers } from "lucide-react"
 import AdminHeader from "@/components/admin/header"
 
 import { getMyRole } from "@/app/actions/users"
@@ -53,6 +53,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { icon: LayoutDashboard, label: "Dashboard", href: "/admin", roles: ["all"] },
         { icon: MessageSquare, label: "Messages", href: "/admin/messages", roles: ["all"] },
         { icon: FolderKanban, label: "Projects", href: "/admin/projects", roles: ["all"] },
+        { icon: Layers, label: "Services", href: "/admin/services", roles: ["all"] },
         { icon: Users, label: "Users", href: "/admin/users", roles: ["super-admin", "secret"] },
         { icon: Users, label: "Team", href: "/admin/team", roles: ["all"] },
         { icon: Info, label: "About", href: "/admin/about", roles: ["all"] },
@@ -60,6 +61,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { icon: FileText, label: "Terms", href: "/admin/terms", roles: ["all"] },
         { icon: Shield, label: "Privacy Policy", href: "/admin/privacy", roles: ["all"] },
         { icon: Share2, label: "Social Media", href: "/admin/socials", roles: ["all"] },
+        { icon: Smartphone, label: "Play Store Link", href: "/admin/playstore", roles: ["all"] },
         { icon: MessageCircle, label: "WhatsApp", href: "/admin/whatsapp", roles: ["all"] },
         { icon: Settings, label: "General Settings", href: "/admin/settings", roles: ["all"] },
     ]
