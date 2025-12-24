@@ -63,7 +63,7 @@ export default function Header() {
 
   // Helper to determine if a generic link is active is tricky with hash, so we'll just stick to simple hover styles
   const navContent = (
-    <div className="hidden md:flex items-center gap-1">
+    <div className="hidden md:flex items-center justify-center gap-1 w-[560px]">
       <Link href={getLink("#home")} className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
         Home
       </Link>
