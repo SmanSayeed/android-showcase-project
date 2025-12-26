@@ -71,13 +71,19 @@ export default function Footer() {
               <Link href="/" className="text-inherit/70 hover:text-primary transition-colors">
                 Home
               </Link>
+              <Link href="/products" className="text-inherit/70 hover:text-primary transition-colors">
+                Products
+              </Link>
+              <Link href="/services" className="text-inherit/70 hover:text-primary transition-colors">
+                Services
+              </Link>
               <Link href="/projects" className="text-inherit/70 hover:text-primary transition-colors">
                 Projects
               </Link>
               <Link href="/team" className="text-inherit/70 hover:text-primary transition-colors">
                 Team
               </Link>
-              <Link href="/#about" className="text-inherit/70 hover:text-primary transition-colors">
+              <Link href="/about" className="text-inherit/70 hover:text-primary transition-colors">
                 About
               </Link>
             </nav>
