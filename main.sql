@@ -1,9 +1,9 @@
--- Supabase Data Dump (Consolidated & Master Fix)
--- Use this file to RESET your database or set it up from scratch.
--- It will DROP existing tables and recreate them to ensure a clean state.
+-- MASTER SQL SCRIPT: SCHEMA + STORAGE + DATA
+-- This script performs a COMPLETE RESET of the project.
+-- It Drops Tables, Re-creates Schema, Sets up Storage, and Seeds Dummy Data.
 
------------ [1. CLEANUP] -----------
--- DROP tables in reverse dependency order to avoid foreign key errors
+----------- [SECTION 1: CLEANUP] -----------
+-- Drop all public tables to ensure a clean state
 DROP TABLE IF EXISTS "public"."profiles" CASCADE;
 DROP TABLE IF EXISTS "public"."social_links" CASCADE;
 DROP TABLE IF EXISTS "public"."faqs" CASCADE;
@@ -20,7 +20,12 @@ DROP TABLE IF EXISTS "public"."products" CASCADE;
 DROP TABLE IF EXISTS "public"."projects" CASCADE;
 DROP TABLE IF EXISTS "public"."services" CASCADE;
 
------------ [2. CREATE TABLES] -----------
+-- Drop Triggers/Functions
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
+
+
+----------- [SECTION 2: SCHEMA DEFINITION] -----------
 
 -- 2.1 Services
 CREATE TABLE "public"."services" (
@@ -76,7 +81,7 @@ CREATE TABLE "public"."site_settings" (
     PRIMARY KEY ("id")
 );
 
--- 2.5 Pages Content (Privacy, Terms, About)
+-- 2.5 Content Pages
 CREATE TABLE "public"."privacy_policy_page" (
     "id" uuid DEFAULT gen_random_uuid() NOT NULL,
     "title" text DEFAULT 'Privacy Policy',
@@ -183,7 +188,7 @@ CREATE TABLE "public"."contact_messages" (
     PRIMARY KEY ("id")
 );
 
--- 2.9 Profiles (Linked to auth.users)
+-- 2.9 Profiles
 CREATE TABLE "public"."profiles" (
     "id" uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     "email" text,
@@ -195,7 +200,7 @@ CREATE TABLE "public"."profiles" (
 );
 
 
------------ [3. ENABLE RLS] -----------
+----------- [SECTION 3: RLS SECURITY] -----------
 ALTER TABLE "public"."services" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."projects" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."products" ENABLE ROW LEVEL SECURITY;
@@ -212,10 +217,7 @@ ALTER TABLE "public"."faqs" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."social_links" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
-
------------ [4. POLICIES] -----------
-
--- 4.1 READ: Enable public read access for all content tables
+-- 3.1 Public Read Policies
 CREATE POLICY "Public read services" ON "public"."services" FOR SELECT USING (true);
 CREATE POLICY "Public read projects" ON "public"."projects" FOR SELECT USING (true);
 CREATE POLICY "Public read products" ON "public"."products" FOR SELECT USING (true);
@@ -231,7 +233,7 @@ CREATE POLICY "Public read faqs" ON "public"."faqs" FOR SELECT USING (true);
 CREATE POLICY "Public read socials" ON "public"."social_links" FOR SELECT USING (true);
 CREATE POLICY "Public read profiles" ON "public"."profiles" FOR SELECT USING (true);
 
--- 4.2 WRITE: Enable full access for authenticated users (Admins)
+-- 3.2 Admin Write Policies
 CREATE POLICY "Admin services" ON "public"."services" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin projects" ON "public"."projects" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin products" ON "public"."products" FOR ALL USING (auth.role() = 'authenticated');
@@ -247,70 +249,114 @@ CREATE POLICY "Admin faqs" ON "public"."faqs" FOR ALL USING (auth.role() = 'auth
 CREATE POLICY "Admin socials" ON "public"."social_links" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin contact_messages" ON "public"."contact_messages" FOR ALL USING (auth.role() = 'authenticated');
 
--- 4.3 Special Policies
--- Profiles: Users can insert/update their own profile
+-- 3.3 User Policies
 CREATE POLICY "Users own profile" ON "public"."profiles" FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users update own profile" ON "public"."profiles" FOR UPDATE USING (auth.uid() = id);
--- Contact Messages: Anyone can insert
 CREATE POLICY "Public insert contact" ON "public"."contact_messages" FOR INSERT WITH CHECK (true);
 
 
------------ [5. DATA SEEDING] -----------
+----------- [SECTION 4: TRIGGERS] -----------
+CREATE OR REPLACE FUNCTION public.handle_new_user() 
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, role, name, created_at)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    'user',
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', ''),
+    NEW.created_at
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- Services
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+----------- [SECTION 5: STORAGE BUCKETS] -----------
+-- Create 'images' bucket
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('images', 'images', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Storage Policies
+DROP POLICY IF EXISTS "Public Access" ON storage.objects;
+CREATE POLICY "Public Access" ON storage.objects FOR SELECT USING ( bucket_id = 'images' );
+
+DROP POLICY IF EXISTS "Auth Upload" ON storage.objects;
+CREATE POLICY "Auth Upload" ON storage.objects FOR INSERT WITH CHECK ( bucket_id = 'images' AND auth.role() = 'authenticated' );
+
+DROP POLICY IF EXISTS "Auth Update" ON storage.objects;
+CREATE POLICY "Auth Update" ON storage.objects FOR UPDATE USING ( bucket_id = 'images' AND auth.role() = 'authenticated' );
+
+DROP POLICY IF EXISTS "Auth Delete" ON storage.objects;
+CREATE POLICY "Auth Delete" ON storage.objects FOR DELETE USING ( bucket_id = 'images' AND auth.role() = 'authenticated' );
+
+
+----------- [SECTION 6: DUMMY DATA SEEDING] -----------
+
+-- 6.1 Services (Rich Data)
 INSERT INTO "public"."services" ("id", "title", "description", "full_description", "features", "icon_name", "color_theme", "order_index") VALUES 
-('android', 'Android Application Development', 'High-quality Android applications built with modern technologies.', 'We specialize in creating robust, scalable, and user-friendly Android applications.', ARRAY['Native Android (Kotlin)', 'Jetpack Compose', 'Offline-first'], 'Smartphone', 'from-[#3b82f6] to-[#06b6d4]', 1),
-('ios', 'iOS Application Development', 'Professional iOS applications designed with intuitive interfaces.', 'Our iOS development team crafts elegant and powerful apps for iPhone and iPad.', ARRAY['Native iOS (Swift)', 'SwiftUI'], 'Smartphone', 'from-[#c084fc] to-[#7c3aed]', 2),
-('game', 'Android Game Development', 'Engaging mobile games with stunning graphics.', 'We bring game ideas to life with Unity and modern Android game engines.', ARRAY['Unity', '2D & 3D Games'], 'Gamepad2', 'from-[#ec4899] to-[#f43f5e]', 3),
-('ui-ux', 'UI/UX Design', 'Creative and intuitive user interface designs.', 'We design user interfaces that are not only visually appealing but also easy to use.', ARRAY['Figma', 'Prototyping'], 'Layout', 'from-[#f97316] to-[#ea580c]', 4);
+('android', 'Android App Development', 'Native Android apps built with Kotlin and Jetpack Compose.', 'We build high-performance, scalable, and beautiful Android applications using the latest technologies. From concept to deployment, we handle it all.', ARRAY['Kotlin & Java', 'Jetpack Compose', 'Material Design 3', 'Offline Support', 'Google Play Publishing'], 'Smartphone', 'from-[#0ea5e9] to-[#3b82f6]', 1),
+('ios', 'iOS App Development', 'Premium iOS experiences using Swift and SwiftUI.', 'Crafting elegant and intuitive iOS applications that users love. We adhere to Apple Human Interface Guidelines for a native feel.', ARRAY['Swift & SwiftUI', 'UIKit Integration', 'App Store Optimization', 'Core Data & CloudKit', 'Widget Support'], 'Smartphone', 'from-[#8b5cf6] to-[#d946ef]', 2),
+('web', 'Web Applications', 'Full-stack web apps with Next.js and Supabase.', 'Building modern, responsive, and SEO-friendly web applications that perform seamlessly across all devices.', ARRAY['Next.js & React', 'Supabase & PostgreSQL', 'Tailwind CSS', 'Serverless Functions', 'PWA Support'], 'Layout', 'from-[#f59e0b] to-[#ea580c]', 3),
+('game', 'Game Development', 'Immersive 2D & 3D games with Unity.', 'Bringing game ideas to life with stunning visuals and engaging mechanics.', ARRAY['Unity 3D', 'C# Scripting', 'Multiplayer Networking', 'Game Design', 'Physics & Animation'], 'Gamepad2', 'from-[#ef4444] to-[#ec4899]', 4);
 
--- Products
-INSERT INTO "public"."products" ("id", "title", "short_description", "details", "image_url", "price", "features", "order_index") VALUES 
-('p1', 'Premium UI Kit', 'A comprehensive UI kit.', 'Accelerate your development with our Premium UI Kit.', 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e', 49.99, ARRAY['500+ Components', 'Figma Files'], 1),
-('p2', 'E-commerce Starter', 'Full-stack e-commerce template.', 'Launch your online store in days.', 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d', 199.00, ARRAY['Next.js', 'Stripe'], 2);
-
--- Projects
+-- 6.2 Projects (Portfolio)
 INSERT INTO "public"."projects" ("title", "description", "full_description", "image_url", "tags", "features") VALUES 
-('Personal Portfolio Website', 'A modern personal portfolio website.', 'Fully responsive personal portfolio.', 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97', ARRAY['React', 'Next.js'], ARRAY['Responsive', 'Animations']);
+('E-Commerce Mobile App', 'A full-featured shopping app with payment integration.', '<p>A complete mobile shopping experience built for a fashion brand.</p><ul><li>User Authentication</li><li>Product Catalog</li><li>Cart & Checkout</li><li>Stripe Integration</li></ul>', 'https://images.unsplash.com/photo-1523206489230-c012c64b2b48?auto=format&fit=crop&q=80&w=800', ARRAY['Android', 'Kotlin', 'E-commerce'], ARRAY['Payment Gateway', 'Push Notifications']),
+('Fitness Tracker', 'Track workouts and monitor health progress.', '<p>A health assistant app that helps users track their daily activities.</p>', 'https://images.unsplash.com/photo-1576678927484-cc907957088c?auto=format&fit=crop&q=80&w=800', ARRAY['iOS', 'HealthKit', 'SwiftUI'], ARRAY['Step Counting', 'Calorie Tracker']),
+('Admin Dashboard Pro', 'Comprehensive admin panel for managing SaaS data.', '<p>A powerful dashboard for analytics and user management.</p>', 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800', ARRAY['Web', 'Next.js', 'Dashboard'], ARRAY['Analytics Charts', 'User Roles', 'Data Export']);
 
--- Site Settings
-INSERT INTO "public"."site_settings" ("id", "site_name", "logo_url", "contact_email", "address", "play_store_url") VALUES 
-(1, 'Aptic Studio', 'https://lfbptxisrfcnkbehzmzi.supabase.co/storage/v1/object/public/images/0.3098733166699379.png', 's@s.com', 'New York, USA', 'https://play.google.com/store/apps');
+-- 6.3 Products (Digital Goods)
+INSERT INTO "public"."products" ("id", "title", "short_description", "details", "image_url", "price", "features", "order_index") VALUES 
+('p1', 'Ultimate UI Kit', '200+ Components for React & Next.js', 'Save hundreds of hours with our pre-built component library.', 'https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&q=80&w=800', 49.00, ARRAY['Accessible', 'Dark Mode', 'Figma Files Included'], 1),
+('p2', 'SaaS Starter Boilerplate', 'Launch your SaaS in a weekend.', 'Complete authentication, payments, and dashboard setup.', 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800', 149.00, ARRAY['Next.js 14', 'Supabase Auth', 'Stripe Subscriptions'], 2),
+('p3', '3D Game Assets Pack', 'Low-poly assets for Unity.', 'Ready-to-use models for your next RPG game.', 'https://images.unsplash.com/photo-1616440347437-b1c73416efc2?auto=format&fit=crop&q=80&w=800', 29.00, ARRAY['Characters', 'Environment', 'Props', 'Rigged Models'], 3);
 
--- Pages
-INSERT INTO "public"."privacy_policy_page" ("title", "description", "content") VALUES ('Privacy Policy', 'Our privacy commitment.', '<h1>Privacy Policy</h1><p>Content...</p>');
-INSERT INTO "public"."terms_page" ("title", "description", "content") VALUES ('Terms of Service', 'Terms and conditions.', '<h1>Terms</h1><p>Content...</p>');
-INSERT INTO "public"."about_page" ("title", "description", "content") VALUES ('About Us', 'Who we are.', 'We are a dev agency.');
+-- 6.4 Team Members
+INSERT INTO "public"."team_members" ("name", "role", "image_url", "bio", "social_links") VALUES 
+('Sarah Johnson', 'Lead Designer', 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400', 'Passionate about creating intuitive and beautiful user interfaces.', '[{"platform": "Twitter", "url": "#"}, {"platform": "LinkedIn", "url": "#"}]'::jsonb),
+('Michael Chen', 'Senior Developer', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=400', 'Full-stack wizard with a love for clean code and performance.', '[{"platform": "GitHub", "url": "#"}, {"platform": "LinkedIn", "url": "#"}]'::jsonb),
+('Emily Davis', 'Project Manager', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=400', 'Keeping projects on track and clients happy.', '[{"platform": "LinkedIn", "url": "#"}]'::jsonb);
 
--- About Stats
-INSERT INTO "public"."about_stats" ("value", "label", "order_index") VALUES 
-('50+', 'Projects', 1), ('30+', 'Clients', 2);
+-- 6.5 Testimonials
+INSERT INTO "public"."testimonials" ("name", "role", "content", "rating", "image_url") VALUES 
+('Alex Rivera', 'CTO, TechCorp', 'The team delivered our app ahead of schedule and it looks amazing. Highly recommended!', 5, 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=200'),
+('Lisa Wong', 'Founder, StyleIt', 'Their design skills are top-notch. Our users love the new interface.', 5, 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=200'),
+('David Smith', 'Director, EduLearn', 'Professional, responsive, and technically proficient. A great partner to work with.', 4, NULL);
 
--- About Products
-INSERT INTO "public"."about_products" ("title", "category", "description", "icon_name", "color_theme", "is_featured", "primary_button_text") VALUES 
-('Aptic AI Scanner', 'Tools', 'Scanner app.', 'ScanLine', 'green', true, 'Get App');
-
--- Team
-INSERT INTO "public"."team_members" ("name", "role", "bio", "image_url", "social_links") VALUES 
-('Saadman Sayeed', 'Founder', 'Lead Developer.', NULL, '[{"platform":"github","url":"https://github.com/saadman"}]'::jsonb);
-
--- Testimonials
-INSERT INTO "public"."testimonials" ("name", "role", "content", "rating") VALUES 
-('John Smith', 'CEO', 'Great work!', 5);
-
--- FAQs
+-- 6.6 FAQs
 INSERT INTO "public"."faqs" ("question", "answer", "category", "order_index") VALUES 
-('What services?', 'Mobile & Web apps.', 'General', 1);
+('What is your typical project timeline?', 'Most mobile app projects take between 8-12 weeks, depending on complexity.', 'General', 1),
+('Do you offer post-launch support?', 'Yes, we provide 3 months of free support and offer maintenance packages thereafter.', 'Support', 2),
+('Can you update my existing app?', 'Absolutely! We specialize in app modernization and refactoring.', 'Services', 3);
 
--- Socials
-INSERT INTO "public"."social_links" ("platform", "url", "icon_name", "order_index") VALUES 
-('GitHub', 'https://github.com/apticstudio', 'Github', 1),
-('LinkedIn', 'https://linkedin.com/company/apticstudio', 'Linkedin', 2);
+-- 6.7 Site Settings
+INSERT INTO "public"."site_settings" ("id", "site_name", "logo_url", "contact_email", "address", "play_store_url") VALUES 
+(1, 'Aptic Studio', NULL, 'hello@apticstudio.com', '123 Innovation Dr, Tech City, NY', 'https://play.google.com/store/apps');
+
+-- 6.8 Social Links
+INSERT INTO "public"."social_links" ("platform", "url", "icon_name") VALUES 
+('GitHub', 'https://github.com', 'Github'),
+('LinkedIn', 'https://linkedin.com', 'Linkedin'),
+('Twitter', 'https://twitter.com', 'Twitter'),
+('Instagram', 'https://instagram.com', 'Instagram');
+
+-- 6.9 Backfill Profiles
+INSERT INTO "public"."profiles" ("id", "email", "role", "name", "created_at")
+SELECT 
+    au.id,
+    au.email,
+    'user', 
+    COALESCE(au.raw_user_meta_data->>'full_name', au.raw_user_meta_data->>'name', ''),
+    au.created_at
+FROM auth.users au
+ON CONFLICT (id) DO NOTHING;
 
 
------------ [6. CACHE REFRESH] -----------
--- Trivial comments to force Schema Cache reload
-COMMENT ON TABLE "public"."profiles" IS 'Profiles Table';
-COMMENT ON TABLE "public"."products" IS 'Products Table';
-COMMENT ON TABLE "public"."services" IS 'Services Table';
-COMMENT ON TABLE "public"."social_links" IS 'Social Links Table';
+----------- [SECTION 7: FINALIZATION] -----------
+NOTIFY pgrst, 'reload schema';

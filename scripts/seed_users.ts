@@ -19,6 +19,7 @@ async function seedUsers() {
     const users = [
         { email: "super-admin@admin.com", password: "password123", role: "super-admin", name: "Super Admin" },
         { email: "admin@admin.com", password: "password123", role: "admin", name: "Admin User" },
+        { email: "a@a.com", password: "11112222", role: "super-admin", name: "Main Admin" },
     ]
 
     for (const u of users) {

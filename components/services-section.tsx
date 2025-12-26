@@ -1,10 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { ChevronRight, Smartphone, Gamepad2, Layout, Code, Monitor, Box, Layers } from "lucide-react"
 import Link from "next/link"
-import { createClient } from "@/lib/supabase"
 
 const ICON_MAP: Record<string, any> = {
   Smartphone,
@@ -16,26 +14,11 @@ const ICON_MAP: Record<string, any> = {
   Layers,
 }
 
-export default function ServicesSection() {
-  const [services, setServices] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const supabase = createClient()
+interface ServicesSectionProps {
+  services: any[]
+}
 
-  useEffect(() => {
-    async function fetchServices() {
-      const { data } = await supabase
-        .from("services")
-        .select("*")
-        .order("order_index")
-      
-      if (data) {
-        setServices(data)
-      }
-      setLoading(false)
-    }
-    fetchServices()
-  }, [])
-
+export default function ServicesSection({ services }: ServicesSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -53,7 +36,8 @@ export default function ServicesSection() {
     },
   }
 
-  if (loading) {
+  if (!services || services.length === 0) {
+    // Optionally return skeleton or nothing
     return <section id="services" className="py-20 bg-background min-h-[500px]" />
   }
 

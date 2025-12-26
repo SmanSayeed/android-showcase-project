@@ -6,13 +6,7 @@ import { motion } from "framer-motion"
 import { Mail, Phone, MapPin, Send, Loader2, Monitor, Smartphone, Palette, HelpCircle, Gamepad2, Layout, Code, Box, Layers } from "lucide-react"
 import { createClient } from "@/lib/supabase"
 import { toast } from "sonner"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+
 
 const ICON_MAP: Record<string, any> = {
   Smartphone,
@@ -55,7 +49,7 @@ export default function ContactSection() {
         .from("services")
         .select("*")
         .order("order_index")
-      
+
       if (servicesData) {
         setServices(servicesData)
       }
@@ -87,7 +81,7 @@ export default function ContactSection() {
       }
 
       toast.success("Message sent successfully! I'll get back to you soon.")
-      setFormData({ name: "", email: "", phone: "", projectType: "web-development", message: "" })
+      setFormData({ name: "", email: "", phone: "", projectType: "", message: "" })
     } catch (error: any) {
       console.error("Submission error:", error)
       toast.error(error.message || "Failed to send message. Please try again.")
@@ -177,70 +171,28 @@ export default function ContactSection() {
                 className="px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors"
                 disabled={loading}
               />
-              <Select
-                value={formData.projectType}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, projectType: value }))}
-                disabled={loading}
-              >
-                <SelectTrigger className="w-full px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground placeholder-muted-foreground focus:outline-none focus:border-primary transition-colors text-left h-auto">
-                    <span className={!formData.projectType ? "text-muted-foreground" : ""}>
-                      {formData.projectType 
-                        ? (services.find(s => s.id === formData.projectType)?.title || (formData.projectType === 'other' ? "Other" : formData.projectType))
-                        : "Select Project Type"
-                      }
-                    </span>
-                </SelectTrigger>
-                <SelectContent
-                  sideOffset={8}
-                  className="
-                    w-[calc(100vw-2rem)] sm:w-(--radix-select-trigger-width)
-                    max-h-[60vh]
-                    overflow-y-auto
-                    p-1.5
-                    mt-2
-                    rounded-xl
-                    border border-border/50
-                    bg-background/95
-                    dark:bg-background/95
-                    text-foreground
-                    shadow-xl
-                    backdrop-blur-md
-                  "
+              <div className="relative">
+                <select
+                  name="projectType"
+                  value={formData.projectType}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 rounded-lg bg-white dark:bg-secondary border border-border text-foreground appearance-none focus:outline-none focus:border-primary transition-colors cursor-pointer"
+                  disabled={loading}
                 >
-                  {services.map((service) => {
-                    const Icon = ICON_MAP[service.icon_name] || Smartphone
-                    return (
-                        <SelectItem 
-                            key={service.id} 
-                            value={service.id}
-                            className="curso-pointer rounded-lg px-3 py-2.5 mb-1 transition-all hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary"
-                        >
-                            <div className="flex items-start gap-3 py-1">
-                                <div className={`p-2 rounded-md ${service.color_theme?.includes('blue') ? 'bg-blue-500/10 text-blue-500' : service.color_theme?.includes('purple') ? 'bg-purple-500/10 text-purple-500' : 'bg-primary/10 text-primary'} mt-0.5`}>
-                                    <Icon size={18} />
-                                </div>
-                                <div className="text-left">
-                                    <div className="font-semibold text-foreground">{service.title}</div>
-                                    <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
-                                </div>
-                            </div>
-                        </SelectItem>
-                    )
-                  })}
-
-                  <SelectItem value="other" className="cursor-pointer rounded-lg px-3 py-2.5 mb-1 transition-all hover:bg-accent focus:bg-accent focus:text-accent-foreground data-[state=checked]:bg-primary/10 data-[state=checked]:text-primary">
-                    <div className="flex items-start gap-3 py-1">
-                      <div className="p-2 bg-gray-500/10 rounded-md text-gray-500 mt-0.5">
-                        <HelpCircle size={18} />
-                      </div>
-                      <div className="text-left">
-                        <div className="font-semibold text-foreground">Other</div>
-                        <p className="text-xs text-muted-foreground mt-0.5">General inquiries or other projects</p>
-                      </div>
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
+                  <option value="" disabled className="text-muted-foreground">Select Project Type</option>
+                  {services.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.title}
+                    </option>
+                  ))}
+                  <option value="other">Other</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                  {/* Using existing lucide-react import if available or standard SVG */}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                </div>
+              </div>
             </div>
 
             <textarea

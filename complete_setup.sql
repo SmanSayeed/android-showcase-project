@@ -1,9 +1,9 @@
--- Supabase Data Dump (Consolidated & Master Fix)
--- Use this file to RESET your database or set it up from scratch.
--- It will DROP existing tables and recreate them to ensure a clean state.
+-- MASTER FULL RESET & SETUP SCRIPT v2
+-- This matches 'supabase_dump.sql' BUT includes the Critical Fixes for Profiles/Triggers.
+-- Run this in Project: https://lfbptxisrfcnkbehzmzi.supabase.co
 
 ----------- [1. CLEANUP] -----------
--- DROP tables in reverse dependency order to avoid foreign key errors
+-- DROP ALL TABLES in reverse dependency order
 DROP TABLE IF EXISTS "public"."profiles" CASCADE;
 DROP TABLE IF EXISTS "public"."social_links" CASCADE;
 DROP TABLE IF EXISTS "public"."faqs" CASCADE;
@@ -19,6 +19,11 @@ DROP TABLE IF EXISTS "public"."site_settings" CASCADE;
 DROP TABLE IF EXISTS "public"."products" CASCADE;
 DROP TABLE IF EXISTS "public"."projects" CASCADE;
 DROP TABLE IF EXISTS "public"."services" CASCADE;
+
+-- Drop Triggers/Functions
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
+
 
 ----------- [2. CREATE TABLES] -----------
 
@@ -76,7 +81,7 @@ CREATE TABLE "public"."site_settings" (
     PRIMARY KEY ("id")
 );
 
--- 2.5 Pages Content (Privacy, Terms, About)
+-- 2.5 Pages Content
 CREATE TABLE "public"."privacy_policy_page" (
     "id" uuid DEFAULT gen_random_uuid() NOT NULL,
     "title" text DEFAULT 'Privacy Policy',
@@ -214,8 +219,7 @@ ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
 
 
 ----------- [4. POLICIES] -----------
-
--- 4.1 READ: Enable public read access for all content tables
+-- Public Read Access
 CREATE POLICY "Public read services" ON "public"."services" FOR SELECT USING (true);
 CREATE POLICY "Public read projects" ON "public"."projects" FOR SELECT USING (true);
 CREATE POLICY "Public read products" ON "public"."products" FOR SELECT USING (true);
@@ -231,7 +235,7 @@ CREATE POLICY "Public read faqs" ON "public"."faqs" FOR SELECT USING (true);
 CREATE POLICY "Public read socials" ON "public"."social_links" FOR SELECT USING (true);
 CREATE POLICY "Public read profiles" ON "public"."profiles" FOR SELECT USING (true);
 
--- 4.2 WRITE: Enable full access for authenticated users (Admins)
+-- Admin Write Access
 CREATE POLICY "Admin services" ON "public"."services" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin projects" ON "public"."projects" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin products" ON "public"."products" FOR ALL USING (auth.role() = 'authenticated');
@@ -247,15 +251,35 @@ CREATE POLICY "Admin faqs" ON "public"."faqs" FOR ALL USING (auth.role() = 'auth
 CREATE POLICY "Admin socials" ON "public"."social_links" FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Admin contact_messages" ON "public"."contact_messages" FOR ALL USING (auth.role() = 'authenticated');
 
--- 4.3 Special Policies
--- Profiles: Users can insert/update their own profile
+-- User Policies
 CREATE POLICY "Users own profile" ON "public"."profiles" FOR INSERT WITH CHECK (auth.uid() = id);
 CREATE POLICY "Users update own profile" ON "public"."profiles" FOR UPDATE USING (auth.uid() = id);
--- Contact Messages: Anyone can insert
 CREATE POLICY "Public insert contact" ON "public"."contact_messages" FOR INSERT WITH CHECK (true);
 
 
------------ [5. DATA SEEDING] -----------
+----------- [5. TRIGGERS (CRITICAL FIX)] -----------
+
+CREATE OR REPLACE FUNCTION public.handle_new_user() 
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, role, name, created_at)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    'user',
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', ''),
+    NEW.created_at
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+
+----------- [6. DATA SEEDING] -----------
 
 -- Services
 INSERT INTO "public"."services" ("id", "title", "description", "full_description", "features", "icon_name", "color_theme", "order_index") VALUES 
@@ -268,10 +292,6 @@ INSERT INTO "public"."services" ("id", "title", "description", "full_description
 INSERT INTO "public"."products" ("id", "title", "short_description", "details", "image_url", "price", "features", "order_index") VALUES 
 ('p1', 'Premium UI Kit', 'A comprehensive UI kit.', 'Accelerate your development with our Premium UI Kit.', 'https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e', 49.99, ARRAY['500+ Components', 'Figma Files'], 1),
 ('p2', 'E-commerce Starter', 'Full-stack e-commerce template.', 'Launch your online store in days.', 'https://images.unsplash.com/photo-1556742049-0cfed4f7a07d', 199.00, ARRAY['Next.js', 'Stripe'], 2);
-
--- Projects
-INSERT INTO "public"."projects" ("title", "description", "full_description", "image_url", "tags", "features") VALUES 
-('Personal Portfolio Website', 'A modern personal portfolio website.', 'Fully responsive personal portfolio.', 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97', ARRAY['React', 'Next.js'], ARRAY['Responsive', 'Animations']);
 
 -- Site Settings
 INSERT INTO "public"."site_settings" ("id", "site_name", "logo_url", "contact_email", "address", "play_store_url") VALUES 
@@ -290,10 +310,6 @@ INSERT INTO "public"."about_stats" ("value", "label", "order_index") VALUES
 INSERT INTO "public"."about_products" ("title", "category", "description", "icon_name", "color_theme", "is_featured", "primary_button_text") VALUES 
 ('Aptic AI Scanner', 'Tools', 'Scanner app.', 'ScanLine', 'green', true, 'Get App');
 
--- Team
-INSERT INTO "public"."team_members" ("name", "role", "bio", "image_url", "social_links") VALUES 
-('Saadman Sayeed', 'Founder', 'Lead Developer.', NULL, '[{"platform":"github","url":"https://github.com/saadman"}]'::jsonb);
-
 -- Testimonials
 INSERT INTO "public"."testimonials" ("name", "role", "content", "rating") VALUES 
 ('John Smith', 'CEO', 'Great work!', 5);
@@ -302,15 +318,17 @@ INSERT INTO "public"."testimonials" ("name", "role", "content", "rating") VALUES
 INSERT INTO "public"."faqs" ("question", "answer", "category", "order_index") VALUES 
 ('What services?', 'Mobile & Web apps.', 'General', 1);
 
--- Socials
-INSERT INTO "public"."social_links" ("platform", "url", "icon_name", "order_index") VALUES 
-('GitHub', 'https://github.com/apticstudio', 'Github', 1),
-('LinkedIn', 'https://linkedin.com/company/apticstudio', 'Linkedin', 2);
+-- Backfill Profiles for existing users
+INSERT INTO "public"."profiles" ("id", "email", "role", "name", "created_at")
+SELECT 
+    au.id,
+    au.email,
+    'user', 
+    COALESCE(au.raw_user_meta_data->>'full_name', au.raw_user_meta_data->>'name', ''),
+    au.created_at
+FROM auth.users au
+ON CONFLICT (id) DO NOTHING;
 
 
------------ [6. CACHE REFRESH] -----------
--- Trivial comments to force Schema Cache reload
-COMMENT ON TABLE "public"."profiles" IS 'Profiles Table';
-COMMENT ON TABLE "public"."products" IS 'Products Table';
-COMMENT ON TABLE "public"."services" IS 'Services Table';
-COMMENT ON TABLE "public"."social_links" IS 'Social Links Table';
+----------- [7. REFRESH CACHE] -----------
+NOTIFY pgrst, 'reload schema';

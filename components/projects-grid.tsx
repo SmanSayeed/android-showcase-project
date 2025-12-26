@@ -17,7 +17,7 @@ interface ProjectsGridProps {
   showTitle?: boolean
 }
 
-export default function ProjectsGrid({ 
+export default function ProjectsGrid({
   className,
   gridClassName,
   limit = 6,
@@ -60,6 +60,8 @@ export default function ProjectsGrid({
       }
     } catch (error) {
       console.log(error)
+      // If we fail on initial load, stop loading so we don't show infinite skeleton
+      if (offset === 0) setLoading(false)
       toast.error("Failed to load projects")
     }
   }
@@ -100,6 +102,10 @@ export default function ProjectsGrid({
         {/* Projects */}
         {loading ? (
           <ProjectsSkeleton />
+        ) : projects.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground text-lg">No projects found.</p>
+          </div>
         ) : (
           <>
             <motion.div
@@ -134,12 +140,12 @@ export default function ProjectsGrid({
             {(hasMore || viewAllHref) && (
               <div className="mt-12 flex justify-center">
                 {viewAllHref ? (
-                   <Link
-                     href={viewAllHref}
-                     className="px-8 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90"
-                   >
-                     Load More
-                   </Link>
+                  <Link
+                    href={viewAllHref}
+                    className="px-8 py-3 rounded-lg bg-primary text-primary-foreground font-bold hover:opacity-90"
+                  >
+                    Load More
+                  </Link>
                 ) : (
                   <button
                     onClick={handleLoadMore}

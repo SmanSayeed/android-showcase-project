@@ -110,6 +110,7 @@ export default function ProjectEditor({ params }: { params: Promise<{ id?: strin
             }
 
             toast.success(isEditMode ? "Project updated" : "Project created")
+            router.refresh()
             router.push("/admin/projects")
         } catch (err) {
             console.log("Unexpected error:", err)

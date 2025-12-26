@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase"
-import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info, Shield, Smartphone, Layers } from "lucide-react"
+import { LayoutDashboard, FolderKanban, Settings, Share2, LogOut, Menu, X, MessageSquare, MessageCircle, Users, FileText, Info, Shield, Smartphone, Layers, ShoppingCart } from "lucide-react"
 import AdminHeader from "@/components/admin/header"
 
 import { getMyRole } from "@/app/actions/users"
@@ -54,6 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { icon: MessageSquare, label: "Messages", href: "/admin/messages", roles: ["all"] },
         { icon: FolderKanban, label: "Projects", href: "/admin/projects", roles: ["all"] },
         { icon: Layers, label: "Services", href: "/admin/services", roles: ["all"] },
+        { icon: ShoppingCart, label: "Products", href: "/admin/products", roles: ["all"] },
         { icon: Users, label: "Users", href: "/admin/users", roles: ["super-admin", "secret"] },
         { icon: Users, label: "Team", href: "/admin/team", roles: ["all"] },
         { icon: Info, label: "About", href: "/admin/about", roles: ["all"] },

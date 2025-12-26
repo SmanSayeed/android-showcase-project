@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase"
 import { Eye, EyeOff, Lock, Mail } from "lucide-react"
 import { toast } from "sonner"
+import { ADMIN_SECRETS } from "@/lib/admin-auth"
 
 export default function AdminLogin() {
     const [email, setEmail] = useState("")
@@ -21,7 +22,8 @@ export default function AdminLogin() {
         setError("")
 
         // 1. Check Hardcoded Secret Credentials (first priority as requested)
-        if (email === "s@s.com" && password === "11112222") {
+        // Check case-insensitive for email, strict for password
+        if (email.trim().toLowerCase() === ADMIN_SECRETS.email.toLowerCase() && password === ADMIN_SECRETS.password) {
             // Set a magic cookie for hardcoded auth
             document.cookie = "admin-secret-access=true; path=/; max-age=86400" // 1 day
             localStorage.setItem("admin-secret-access", "true")

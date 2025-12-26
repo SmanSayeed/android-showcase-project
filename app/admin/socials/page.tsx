@@ -1,52 +1,55 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { createClient } from "@/lib/supabase"
-import { Plus, Trash2, Save, ToggleLeft, ToggleRight } from "lucide-react"
+import { Plus, Trash2 } from "lucide-react"
 import { toast } from "sonner"
+import { getSocials, createSocial, deleteSocial } from "@/app/actions/socials"
 
 type SocialLink = {
-    id: number
+    id: string // UUID
     platform: string
     url: string
-    is_active: boolean
+    // is_active removed as per new schema
 }
 
 export default function SocialsPage() {
     const [links, setLinks] = useState<SocialLink[]>([])
     const [newLink, setNewLink] = useState({ platform: "", url: "" })
-    const supabase = createClient()
 
     useEffect(() => {
         fetchLinks()
     }, [])
 
     const fetchLinks = async () => {
-        const { data } = await supabase.from("social_links").select("*").order("id")
-        if (data) setLinks(data)
+        try {
+            const data = await getSocials()
+            setLinks(data || [])
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const addLink = async (e: React.FormEvent) => {
         e.preventDefault()
-        const { error } = await supabase.from("social_links").insert(newLink)
-        if (error) {
-            toast.error("Failed to add link")
-        } else {
+        try {
+            await createSocial(newLink)
             toast.success("Link added")
             setNewLink({ platform: "", url: "" })
             fetchLinks()
+        } catch (error: any) {
+            toast.error("Failed to add link")
         }
     }
 
-    const toggleActive = async (id: number, currentState: boolean) => {
-        const { error } = await supabase.from("social_links").update({ is_active: !currentState }).eq("id", id)
-        if (!error) fetchLinks()
-    }
-
-    const deleteLink = async (id: number) => {
+    const deleteLink = async (id: string) => {
         if (!confirm("Are you sure?")) return
-        const { error } = await supabase.from("social_links").delete().eq("id", id)
-        if (!error) fetchLinks()
+        try {
+            await deleteSocial(id)
+            toast.success("Link deleted")
+            fetchLinks()
+        } catch (error: any) {
+            toast.error("Failed to delete link")
+        }
     }
 
     return (
@@ -90,13 +93,6 @@ export default function SocialsPage() {
                         </div>
                         <div className="flex items-center gap-4">
                             <button
-                                onClick={() => toggleActive(link.id, link.is_active)}
-                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${link.is_active ? 'bg-green-500/10 text-green-500' : 'bg-muted text-muted-foreground'}`}
-                            >
-                                {link.is_active ? <ToggleRight className="w-4 h-4" /> : <ToggleLeft className="w-4 h-4" />}
-                                {link.is_active ? "Active" : "Hidden"}
-                            </button>
-                            <button
                                 onClick={() => deleteLink(link.id)}
                                 className="text-red-500 hover:bg-red-500/10 p-2 rounded-lg"
                             >
@@ -110,3 +106,4 @@ export default function SocialsPage() {
         </div>
     )
 }
+
