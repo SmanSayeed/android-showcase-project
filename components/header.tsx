@@ -80,8 +80,8 @@ export default function Header() {
       </Link>
 
       {/* Products Dropdown */}
-      <div className="flex items-center gap-0.5">
-        <Link href="/products" className="px-3 py-2 rounded-l-lg text-foreground hover:bg-muted transition-colors font-medium">
+      <div className="flex items-center gap-0">
+        <Link href="/products" className="px-0 py-2 rounded-l-lg text-foreground hover:bg-muted transition-colors font-medium">
           Products
         </Link>
         <DropdownMenu>
@@ -138,8 +138,8 @@ export default function Header() {
       </div>
 
       {/* Services Dropdown */}
-      <div className="flex items-center gap-0.5">
-        <Link href="/services" className="px-3 py-2 rounded-l-lg text-foreground hover:bg-muted transition-colors font-medium">
+      <div className="flex items-center gap-0">
+        <Link href="/services" className="px-0 py-2 rounded-l-lg text-foreground hover:bg-muted transition-colors font-medium">
           Services
         </Link>
         <DropdownMenu>
@@ -184,7 +184,7 @@ export default function Header() {
 
       {/* Projects Dropdown */}
       <DropdownMenu>
-        <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
+        <DropdownMenuTrigger className="flex items-center gap-1 px-0 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium focus:outline-none">
           Projects <ChevronDown size={14} className="opacity-50" />
         </DropdownMenuTrigger>
         <DropdownMenuContent
@@ -222,12 +222,12 @@ export default function Header() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <Link href="/team" className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
+      <Link href="/team" className="px-2 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
         Team
       </Link>
-      {/* <Link href="/about" className="px-4 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
+      <Link href="/about" className="px-2 py-2 rounded-lg text-foreground hover:bg-muted transition-colors font-medium">
         About Us
-      </Link> */}
+      </Link>
     </div>
   )
 

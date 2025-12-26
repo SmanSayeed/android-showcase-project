@@ -71,7 +71,7 @@ export default async function ProductDetailPage(props: Props) {
                         <ProductDetailAnimations type="content">
                             <div className="flex flex-col">
                                 <div className="mb-6">
-                                    <div className="flex items-center gap-2 mb-4">
+                                    {/* <div className="flex items-center gap-2 mb-4">
                                         <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold">
                                             Digital Product
                                         </span>
@@ -83,7 +83,7 @@ export default async function ProductDetailPage(props: Props) {
                                             <Star className="w-4 h-4 fill-current" />
                                             <span className="text-muted-foreground ml-1 text-sm">(5.0)</span>
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 leading-tight">
                                         {product.title}
@@ -93,7 +93,7 @@ export default async function ProductDetailPage(props: Props) {
                                     </p>
                                 </div>
 
-                                <div className="border-t border-border my-8 pt-8">
+                                {/* <div className="border-t border-border my-8 pt-8">
                                     <div className="flex items-baseline mb-8">
                                         <span className="text-5xl font-bold text-foreground">${product.price}</span>
                                         <span className="text-lg text-muted-foreground ml-2">USD</span>
@@ -108,7 +108,7 @@ export default async function ProductDetailPage(props: Props) {
                                             Instant download + Lifetime updates
                                         </p>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 {/* Features List */}
                                 <div className="bg-muted/30 rounded-2xl p-6 md:p-8">

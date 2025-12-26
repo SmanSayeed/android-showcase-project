@@ -1,9 +1,5 @@
 import { ProductsSkeleton } from "@/components/products-skeleton"
 import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Search } from "lucide-react"
-import { Input } from "@/components/ui/input"
 
 export default function Loading() {
     return (
@@ -15,13 +11,13 @@ export default function Loading() {
                     {/* Header Skeleton */}
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                         <div>
-                            <Skeleton className="h-10 w-64 mb-4" />
-                            <Skeleton className="h-6 w-96" />
+                            <div className="h-10 w-64 mb-4 bg-muted rounded-md animate-pulse" />
+                            <div className="h-6 w-96 bg-muted rounded-md animate-pulse" />
                         </div>
 
                         {/* Search Skeleton */}
                         <div className="relative w-full md:w-80">
-                            <Skeleton className="h-10 w-full rounded-md" />
+                            <div className="h-10 w-full rounded-md bg-muted animate-pulse" />
                         </div>
                     </div>
 
@@ -30,7 +26,6 @@ export default function Loading() {
                 </div>
             </main>
 
-            <Footer />
         </div>
     )
 }
