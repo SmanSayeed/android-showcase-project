@@ -75,37 +75,36 @@ export default function WhyChooseUs() {
 
         {/* View Team Section - Intro Block */}
         <motion.div
-          className="mt-20 relative rounded-2xl overflow-hidden bg-card border border-border/50 shadow-sm"
+          className="mt-20 relative rounded-2xl overflow-hidden bg-card border border-border/50 shadow-sm flex flex-col md:flex-row items-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex flex-col md:flex-row items-center h-auto md:min-h-[400px]">
-            {/* Left: Content */}
-            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-              <h3 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">Our Team</h3>
-              <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
-                Our diverse team of engineers, designers, and strategists is dedicated to delivering excellence in every line of code and pixel of design.
-              </p>
-              <div>
-                <Link href="/team" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all group shadow-md hover:shadow-lg">
-                  View All Members
-                  <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: Image */}
-            <div className="w-full md:w-1/2 relative flex items-center justify-center p-6 md:p-8 bg-white dark:bg-muted/10">
-              {/* Flat Vector Illustration */}
-             <img
-  src="/team-illustration.png"
-  alt="Our Team Illustration"
-  className="w-full max-w-xs md:max-w-none h-auto object-contain"
-/>
+          {/* Left: Content */}
+          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+            <h3 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">Our Team</h3>
+            <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
+              Our diverse team of engineers, designers, and strategists is dedicated to delivering excellence in every line of code and pixel of design.
+            </p>
+            <div>
+              <Link href="/team" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-all group shadow-md hover:shadow-lg">
+                View All Members
+                <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              </Link>
             </div>
           </div>
+
+          {/* Right: Image */}
+          <div className="w-full md:w-1/2 relative flex items-center justify-center p-2 md:p-2 bg-white dark:bg-muted/10">
+            {/* Flat Vector Illustration */}
+            <img
+              src="/team-illustration.png"
+              alt="Our Team Illustration"
+              className="w-full max-w-xs md:max-w-none h-auto object-contain"
+            />
+          </div>
+
         </motion.div>
 
 
