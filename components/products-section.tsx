@@ -95,9 +95,9 @@ export default function ProductsSection({ products }: ProductsSectionProps) {
                                             </div>
                                         )}
                                         {/* Price Tag */}
-                                        <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white md:px-3 md:py-1 px-2.5 py-0.5 rounded-full text-sm font-bold border border-white/10">
+                                        {/* <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white md:px-3 md:py-1 px-2.5 py-0.5 rounded-full text-sm font-bold border border-white/10">
                                             ${product.price}
-                                        </div>
+                                        </div> */}
                                     </div>
 
                                     {/* Content */}

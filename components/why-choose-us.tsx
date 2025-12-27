@@ -75,14 +75,14 @@ export default function WhyChooseUs() {
 
         {/* View Team Section - Intro Block */}
         <motion.div
-          className="mt-20 relative rounded-2xl overflow-hidden bg-card border border-border/50 shadow-sm flex flex-col md:flex-row items-center"
+          className="mt-10 relative rounded-2xl overflow-hidden bg-card border border-border/50 shadow-sm flex flex-col md:flex-row items-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.4 }}
         >
           {/* Left: Content */}
-          <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+          <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-center">
             <h3 className="text-3xl md:text-4xl font-bold mb-6 text-foreground">Our Team</h3>
             <p className="text-muted-foreground mb-8 text-lg leading-relaxed">
               Our diverse team of engineers, designers, and strategists is dedicated to delivering excellence in every line of code and pixel of design.
@@ -96,12 +96,12 @@ export default function WhyChooseUs() {
           </div>
 
           {/* Right: Image */}
-          <div className="w-full md:w-1/2 relative flex items-center justify-center p-2 md:p-2 bg-white dark:bg-muted/10">
+          <div className="w-full md:w-1/2 relative flex items-center justify-center p-2 md:p-2">
             {/* Flat Vector Illustration */}
             <img
               src="/team-illustration.png"
               alt="Our Team Illustration"
-              className="w-full max-w-xs md:max-w-none h-auto object-contain"
+              className="w-[80%] md:w-[50%] h-auto object-contain mb-6 md:mb-10"
             />
           </div>
 

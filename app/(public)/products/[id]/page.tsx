@@ -35,7 +35,7 @@ export default async function ProductDetailPage(props: Props) {
         <div className="min-h-screen bg-background flex flex-col">
             <Header />
 
-            <main className="flex-grow pt-24 pb-16">
+            <main className="flex-grow pt-0 pb-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <Link href="/products" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8 transition-colors">
                         <ArrowLeft className="w-4 h-4 mr-2" />
@@ -59,11 +59,11 @@ export default async function ProductDetailPage(props: Props) {
                                         <Tag size={64} />
                                     </div>
                                 )}
-                                <div className="absolute top-4 right-4">
+                                {/* <div className="absolute top-4 right-4">
                                     <Button size="icon" variant="secondary" className="rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border-white/10">
                                         <Share2 className="w-5 h-5" />
                                     </Button>
-                                </div>
+                                </div> */}
                             </div>
                         </ProductDetailAnimations>
 
